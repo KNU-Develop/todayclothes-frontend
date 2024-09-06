@@ -32,6 +32,7 @@ export class Fetcher {
       }
 
       const response = await fetch(`${this.baseUrl}${url}`, fetchOptions)
+      // const response = await fetch(url, fetchOptions)
 
       if (response.ok) {
         data = (await response.json()) as Promise<ResponseType>
@@ -94,7 +95,7 @@ export class API {
 
   private readonly url: string
 
-  public constructor(method: Method, url: string) {
+  public constructor(method: Method, url: string, isAuth = false) {
     this.method = method
     this.url = url
   }
