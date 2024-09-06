@@ -95,7 +95,7 @@ export class API {
 
   private readonly url: string
 
-  public constructor(method: Method, url: string, isAuth = false) {
+  public constructor(method: Method, url: string) {
     this.method = method
     this.url = url
   }
