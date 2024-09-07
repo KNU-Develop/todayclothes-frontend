@@ -1,15 +1,9 @@
-'use client'
-
-import './globals.css';
-import { store } from '../redux/store'
-import { Provider } from 'react-redux';
-import type { Metadata } from 'next'
 import './globals.css'
-
+import type { Metadata } from 'next'
 import { MSWComponent } from '@/api/MSWComponent'
 import { cn } from '@/lib/utils'
 import ReactQueryProvider from '@/providers/ReactQueryProvider'
-
+import ReduxProvider from '@/api/ReduxProvider'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -26,16 +20,16 @@ export default function RootLayout({
         {process.env.NEXT_PUBLIC_MSW === 'enable' ? (
           <MSWComponent>
             <ReactQueryProvider>
-              <Provider store={store}>
+              <ReduxProvider>
                 <div>{children}</div>
-              </Provider>
+              </ReduxProvider>
             </ReactQueryProvider>
           </MSWComponent>
         ) : (
           <ReactQueryProvider>
-              <Provider store={store}>
-                <div>{children}</div>
-              </Provider>
+            <ReduxProvider>
+              <div>{children}</div>
+            </ReduxProvider>
           </ReactQueryProvider>
         )}
       </body>

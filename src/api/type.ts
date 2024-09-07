@@ -1,4 +1,4 @@
-import { DefaultedQueryObserverOptions } from '@tanstack/react-query';
+import { DefaultedQueryObserverOptions } from '@tanstack/react-query'
 
 export type CustomQueryOptions<T> = Omit<
   DefaultedQueryObserverOptions<T>,
