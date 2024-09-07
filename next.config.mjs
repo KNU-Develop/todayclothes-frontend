@@ -3,6 +3,10 @@ const nextConfig = {
   experimental: {
     instrumentationHook: true,
   },
+  output: 'standalone',
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 
   webpack(config, { isServer }) {
     if (isServer) {
