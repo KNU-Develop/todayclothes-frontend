@@ -1,3 +1,8 @@
+'use client'
+
+import './globals.css';
+import { store } from '../redux/store'
+import { Provider } from 'react-redux';
 import type { Metadata } from 'next'
 import './globals.css'
 
@@ -21,12 +26,16 @@ export default function RootLayout({
         {process.env.NEXT_PUBLIC_MSW === 'enable' ? (
           <MSWComponent>
             <ReactQueryProvider>
-              <div>{children}</div>
+              <Provider store={store}>
+                <div>{children}</div>
+              </Provider>
             </ReactQueryProvider>
           </MSWComponent>
         ) : (
           <ReactQueryProvider>
-            <div>{children}</div>
+              <Provider store={store}>
+                <div>{children}</div>
+              </Provider>
           </ReactQueryProvider>
         )}
       </body>

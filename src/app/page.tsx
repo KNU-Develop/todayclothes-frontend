@@ -1,6 +1,12 @@
+'use client'
 import Image from "next/image";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 export default function Home() {
+  const token = useSelector((state: RootState) => state.login.accessToken);
+
+  console.log(token);
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
