@@ -5,22 +5,24 @@ import { List } from 'postcss/lib/list'
 
 interface LoginState {
   accessToken: string | null
+  refreshToken: string | null
 }
 
 const initialState: LoginState = {
   accessToken: null,
+  refreshToken: null,
 }
 export const Login = createSlice({
   name: 'login',
   initialState,
   reducers: {
-    setLogin: (state, action: PayloadAction<string>) => {
+    setAccessToken: (state, action: PayloadAction<string>) => {
       state.accessToken = action.payload
     },
-    logout: (state) => {
+    setRefreshToken: (state) => {
       state.accessToken = null
     },
   },
 })
-export const { setLogin, logout } = Login.actions
+export const { setAccessToken, setRefreshToken } = Login.actions
 export default Login.reducer
