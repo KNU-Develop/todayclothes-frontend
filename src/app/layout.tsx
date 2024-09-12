@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { MSWComponent } from '@/api/MSWComponent'
 import { cn } from '@/lib/utils'
 import ReactQueryProvider from '@/providers/ReactQueryProvider'
-import ReduxProvider from '@/api/ReduxProvider'
+import ReduxProvider from '@/providers/ReduxProvider'
 
 export const metadata: Metadata = {
   title: 'Create Next App',

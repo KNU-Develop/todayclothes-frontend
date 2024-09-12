@@ -22,6 +22,10 @@ export const Login = createSlice({
     setRefreshToken: (state) => {
       state.accessToken = null
     },
+    logout: (state) => {
+      state.accessToken = null
+      state.refreshToken = null
+    },
   },
 })
 export const { setAccessToken, setRefreshToken } = Login.actions
