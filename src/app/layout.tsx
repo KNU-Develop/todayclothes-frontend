@@ -21,7 +21,7 @@ export default function RootLayout({
           <MSWComponent>
             <ReactQueryProvider>
               <ReduxProvider>
-                <div>{children}</div>
+                <div className="container">{children}</div>
               </ReduxProvider>
             </ReactQueryProvider>
           </MSWComponent>
