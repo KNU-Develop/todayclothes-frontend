@@ -1,12 +1,13 @@
 'use client'
 
 import { configureStore } from '@reduxjs/toolkit'
-import { combineReducers } from 'redux'
 import loginReducer from './slice/Login'
+import languageReducer from './slice/languageSlice'
 
 export const store = configureStore({
   reducer: {
     login: loginReducer,
+    language: languageReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
