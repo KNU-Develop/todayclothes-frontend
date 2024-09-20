@@ -4,7 +4,6 @@ import { variants } from './style'
 type Color = 'zinc' | 'rose' | 'amber' | 'lime' | 'emerald' | 'blue' | 'violet'
 
 const NavigationBar = ({ color }: { color: Color }) => {
-
   const handleHistoryClick = () => {
     // History 클릭 시 동작
   }
