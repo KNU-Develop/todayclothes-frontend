@@ -23,7 +23,7 @@ const NavigationBar = ({ color }: { color: Color }) => {
 
   return (
     <div
-      className={`flex h-[72px] items-center justify-between rounded-[40px] px-14 py-2 shadow-base ${variants[color].bg}`}
+      className={`flex h-[72px] w-[528px] items-center justify-between rounded-[40px] px-14 py-2 shadow-base ${variants[color].bg}`}
     >
       <History
         size={40}
