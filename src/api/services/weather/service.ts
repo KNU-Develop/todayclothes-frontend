@@ -2,6 +2,8 @@ import { QueryClient } from '@tanstack/react-query'
 import { coordinate, WeatherResponse } from './model'
 import { WEATHER_API_KEY } from '@/api/constants/header-key'
 import axios from 'axios'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/redux/store'
 
 export const WeatherService = {
   async weatherInfo(

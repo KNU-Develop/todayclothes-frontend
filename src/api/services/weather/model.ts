@@ -9,7 +9,6 @@ export interface WeatherResponse {
   list: WeatherEntry[]
   city: City
 }
-
 export interface WeatherEntry {
   dt: number
   main: MainWeather
@@ -22,7 +21,6 @@ export interface WeatherEntry {
   sys: Sys
   dt_txt: string
 }
-
 export interface MainWeather {
   temp: number
   feels_like: number
@@ -34,7 +32,6 @@ export interface MainWeather {
   humidity: number
   temp_kf: number
 }
-
 export interface Weather {
   id: number
   main: string
@@ -45,17 +42,14 @@ export interface Weather {
 export interface Clouds {
   all: number
 }
-
 export interface Wind {
   speed: number
   deg: number
   gust: number
 }
-
 export interface Rain {
   '1h': number
 }
-
 export interface Sys {
   pod: string
 }
