@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const TempSlice = createSlice({
   name: 'currentTemp',
-  initialState: 'fresh',
+  initialState: null,
   reducers: {
     setTemp: (state, action) => action.payload,
   },

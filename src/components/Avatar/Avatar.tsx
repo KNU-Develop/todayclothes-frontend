@@ -12,11 +12,14 @@ import {
   cloudImage,
 } from './AvatarImg'
 import Image from 'next/image'
+import React, { useEffect } from 'react'
+import { clearTimeout } from 'timers'
 
 export const HomeAvatar = () => {
   const temp = useSelector((data: RootState) => data.currentTemp)
 
   const getImageArray = () => {
+    if (temp == null) return []
     switch (temp) {
       case 'fresh':
         return freshImage
@@ -40,12 +43,61 @@ export const HomeAvatar = () => {
   const randomImage = imageArray[Math.floor(Math.random() * imageArray.length)]
 
   return (
-    <div className="flex items-center justify-center px-[8em] py-[5em]">
+    <div className="flex flex-shrink items-center justify-center px-[8em] py-[5em]">
       {randomImage ? (
-        <Image src={randomImage} alt="Avatar" width={200} height={500} />
+        <Image
+          src={randomImage}
+          alt="Avatar"
+          width={200}
+          height={450}
+          style={{ height: '45vh' }}
+        />
       ) : (
         <p>No Image</p>
       )}
+    </div>
+  )
+}
+export const LoadingAvatar = () => {
+  const temp = useSelector((data: RootState) => data.currentTemp)
+  const language = useSelector((state: RootState) => state.language)
+
+  const imageArray = [
+    ...so_hotImage,
+    ...hotImage,
+    ...freshImage,
+    ...cloudImage,
+    ...coldImage,
+    ...so_coldImage,
+  ]
+  const randomImage = imageArray[Math.floor(Math.random() * imageArray.length)]
+
+  return (
+    <div className="flex flex-col items-center justify-end pt-[10vh]">
+      {randomImage && (
+        <Image
+          src={randomImage}
+          alt="Avatar"
+          width={200}
+          height={450}
+          style={{ height: '60vh' }}
+        />
+      )}
+      <p className="text-center align-middle font-notosanko text-[24px] font-bold">
+        {language === 'en' ? (
+          <>
+            Generating styles...
+            <br />
+            Please wait a moment.
+          </>
+        ) : (
+          <>
+            오늘의 옷장에서 옷을 찾고 있어요.
+            <br />
+            조금만 기다려주세요!
+          </>
+        )}
+      </p>
     </div>
   )
 }
