@@ -59,7 +59,6 @@ export const HomeAvatar = () => {
   )
 }
 export const LoadingAvatar = () => {
-  const temp = useSelector((data: RootState) => data.currentTemp)
   const language = useSelector((state: RootState) => state.language)
 
   const imageArray = [
@@ -71,7 +70,6 @@ export const LoadingAvatar = () => {
     ...so_coldImage,
   ]
   const randomImage = imageArray[Math.floor(Math.random() * imageArray.length)]
-
   return (
     <div className="flex flex-col items-center justify-end pt-[10vh]">
       {randomImage && (

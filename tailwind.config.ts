@@ -35,6 +35,7 @@ const config = {
         base: '0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.10)',
       },
       fontSize: {
+        clam: 'clam(1rem, 2vw, 2.25rem)',
         weatherTitle: [
           '36px',
           {
