@@ -56,7 +56,7 @@ const HomePage = () => {
 
   return (
     <div
-      className={`flex min-h-screen flex-col gap-[2vh] p-[2vw] bg-${!loading ? background : 'white'}`}
+      className={`flex min-h-screen min-w-[600px] flex-col gap-[2vh] p-[2vw] bg-${!loading ? background : 'white'}`}
     >
       {!loading && background ? (
         <>

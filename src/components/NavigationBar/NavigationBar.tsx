@@ -37,7 +37,7 @@ const NavigationBar = ({ color }: { color: Color }) => {
         />
       ) : (
         <Plus
-          size={'2.5em'}
+          size={'3em'}
           className={`cursor-pointer ${variants[color].text}`}
           onClick={handlePlusClick}
         />

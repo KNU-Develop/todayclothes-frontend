@@ -14,7 +14,6 @@ const config = {
   theme: {
     container: {
       center: true, // 중앙 정렬
-      padding: '1rem', // 기본 패딩 설정
       screens: {
         DEFAULT: '600px', // 화면 너비의 32%로 설정
       },
