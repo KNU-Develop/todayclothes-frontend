@@ -14,7 +14,6 @@ const config = {
   theme: {
     container: {
       center: true, // 중앙 정렬
-      padding: '1rem', // 기본 패딩 설정
       screens: {
         DEFAULT: '600px', // 화면 너비의 32%로 설정
       },
@@ -35,6 +34,7 @@ const config = {
         base: '0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.10)',
       },
       fontSize: {
+        clam: 'clam(1rem, 2vw, 2.25rem)',
         weatherTitle: [
           '36px',
           {

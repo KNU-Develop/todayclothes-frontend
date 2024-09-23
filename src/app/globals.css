@@ -29,3 +29,24 @@
 .body {
   font-family: 'Jalnan2', 'NotoSansKR', 'Toss';
 }
+.bg-so_hot {
+  @apply bg-rose-100;
+}
+.bg-hot {
+  @apply bg-amber-100;
+}
+.bg-fresh {
+  @apply bg-lime-100;
+}
+.bg-cloud {
+  @apply bg-emerald-100;
+}
+.bg-cold {
+  @apply bg-blue-100;
+}
+.bg-so_cold {
+  @apply bg-violet-100;
+}
+.bg-rain {
+  @apply bg-gray-100;
+}

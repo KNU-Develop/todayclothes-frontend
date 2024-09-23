@@ -1,1 +1,5 @@
 export const ACCESS_TOKEN_HEADER_KEY = 'Authorization'
+export const WEATHER_API_KEY = 'ecf4534aa617f24cd06044b10e7927f7'
+export const ENDPOINT = 'https://api.cognitive.microsofttranslator.com'
+export const TRANSLATE_KEY = '83c0c5f733b04867a17f70a94757d174'
+export const TRANSLATE_REGION = 'koreacentral'
