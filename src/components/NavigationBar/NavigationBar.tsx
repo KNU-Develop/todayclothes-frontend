@@ -1,10 +1,9 @@
 import { History, Plus, RotateCw, User } from 'lucide-react'
 import { variants } from './style'
 
-type Color = 'zinc' | 'rose' | 'amber' | 'lime' | 'emerald' | 'blue' | 'violet'
+type Color = 'zinc' | 'so_hot' | 'hot' | 'fresh' | 'cloud' | 'cold' | 'so_cold'
 
 const NavigationBar = ({ color }: { color: Color }) => {
-
   const handleHistoryClick = () => {
     // History 클릭 시 동작
   }
@@ -23,28 +22,28 @@ const NavigationBar = ({ color }: { color: Color }) => {
 
   return (
     <div
-      className={`flex h-[72px] w-[528px] items-center justify-between rounded-[40px] px-14 py-2 shadow-base ${variants[color].bg}`}
+      className={`flex h-fit w-full items-center justify-between rounded-[40px] px-14 py-4 shadow-base ${variants[color].bg}`}
     >
       <History
-        size={40}
+        size={'2.5em'}
         className={`cursor-pointer ${variants[color].text}`}
         onClick={handleHistoryClick}
       />
       {color === 'zinc' ? (
         <RotateCw
-          size={40}
+          size={'2.5em'}
           className="cursor-pointer text-zinc-600"
           onClick={handleRotateClick}
         />
       ) : (
         <Plus
-          size={56}
+          size={'3em'}
           className={`cursor-pointer ${variants[color].text}`}
           onClick={handlePlusClick}
         />
       )}
       <User
-        size={40}
+        size={'2.5em'}
         className={`cursor-pointer ${variants[color].text} ${variants[color].fill}`}
         onClick={handleUserClick}
       />

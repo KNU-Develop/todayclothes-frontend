@@ -14,7 +14,7 @@ const Header = () => {
   }
 
   return (
-    <div className="flex h-[34px] w-[528px] flex-1 items-center justify-between bg-white">
+    <div className="flex items-center justify-between">
       {language === 'ko' ? (
         <div className="font-jalnan text-[24px]">오늘의 옷장</div>
       ) : (
