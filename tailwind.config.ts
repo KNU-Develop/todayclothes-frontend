@@ -227,6 +227,16 @@ const config = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+
+      keyframes: {
+        fadein: {
+          '0%': { transform: 'translateY(-20px)', opacity: '0' }, // 시작 위치와 투명도
+          '100%': { transform: 'translateY(0)', opacity: '1' }, // 끝 위치와 투명도
+        },
+      },
+      animation: {
+        fadein: 'fadein 1s ease-out',
+      },
     },
   },
 } satisfies Config
