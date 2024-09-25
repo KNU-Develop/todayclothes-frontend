@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
 import { useModal } from '@/hooks/useModal/useModal'
+import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import dayjs, { Dayjs } from 'dayjs'
 
 const PlansModal: React.FC = () => {
   const { isVisible, openModal, closeModal } = useModal()
@@ -13,6 +16,11 @@ const PlansModal: React.FC = () => {
     'Indoors' | 'Outdoors' | null
   >(null)
   const [activityStyle, setActivityStyle] = useState<string | null>(null)
+
+  // 상태 추가: 시작 시간, 끝 시간 및 타임 피커 열기 여부
+  const [startTime, setStartTime] = useState<Dayjs | null>(null)
+  const [endTime, setEndTime] = useState<Dayjs | null>(null)
+  const [isTimePickerOpen, setTimePickerOpen] = useState(false)
 
   // 스타일을 영어와 한글로 나누어 정의
   const activityStyles =
@@ -33,6 +41,27 @@ const PlansModal: React.FC = () => {
 
   const handleActivityStyleClick = (style: string) => {
     setActivityStyle(style)
+  }
+
+  // 타임 피커 열기
+  const handleTimeInputClick = () => {
+    setTimePickerOpen(!isTimePickerOpen) // Toggle dropdown visibility
+  }
+
+  // 타임 선택 확인
+  const handleTimeConfirm = () => {
+    setTimePickerOpen(false)
+  }
+
+  // 타임 선택 취소
+  const handleTimeCancel = () => {
+    setStartTime(null)
+    setEndTime(null)
+    setTimePickerOpen(false)
+  }
+
+  const handleLog = () => {
+    console.log(startTime, endTime)
   }
 
   return (
@@ -66,9 +95,50 @@ const PlansModal: React.FC = () => {
                       ? '활동 시간을 선택해주세요.'
                       : 'Please select the activity time.'
                   }
-                  className="w-full rounded-[8px] bg-gray-100 px-4 py-2 text-gray-400"
-                  disabled
+                  className="w-full cursor-pointer rounded-[8px] bg-gray-100 px-4 py-2 text-gray-400"
+                  onClick={handleTimeInputClick}
+                  value={
+                    startTime && endTime
+                      ? `${startTime.format('HH:mm')} - ${endTime.format('HH:mm')}`
+                      : ''
+                  }
+                  readOnly
                 />
+                {/* Time Picker Dropdown */}
+                {isTimePickerOpen && (
+                  <div className="absolute left-1/2 z-10 mt-2 flex max-w-[300px] -translate-x-1/2 rounded-[8px] bg-white shadow-lg">
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <div className="mb-2 flex flex-col gap-[10px] p-2">
+                        <TimePicker
+                          label="시작 시간"
+                          value={startTime}
+                          onChange={(newValue) => setStartTime(newValue)}
+                        />
+                        <TimePicker
+                          label="종료 시간"
+                          value={endTime}
+                          onChange={(newValue) => setEndTime(newValue)}
+                        />
+                        <div className="mx-2 mt-2 flex justify-around">
+                          <button
+                            type="button"
+                            onClick={handleTimeCancel}
+                            className="w-2/5 rounded-[8px] bg-red-100 text-red-600"
+                          >
+                            취소
+                          </button>
+                          <button
+                            type="button"
+                            onClick={handleTimeConfirm}
+                            className="h-[30px] w-2/5 rounded-[8px] bg-red-500 text-white"
+                          >
+                            확인
+                          </button>
+                        </div>
+                      </div>
+                    </LocalizationProvider>
+                  </div>
+                )}
               </div>
 
               {/* Activity Location */}
@@ -152,8 +222,9 @@ const PlansModal: React.FC = () => {
                   {language === 'ko' ? '취소' : 'Cancel'}
                 </button>
                 <button
-                  type="submit"
+                  type="button"
                   className="flex-1 rounded-[6px] bg-red-500 py-2 text-white"
+                  onClick={handleLog}
                 >
                   {language === 'ko' ? '생성' : 'Generate'}
                 </button>
