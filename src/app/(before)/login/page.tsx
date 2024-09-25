@@ -2,10 +2,13 @@
 
 import Header from '@/components/Header/Header'
 import { RootState } from '@/redux/store'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useSelector } from 'react-redux'
 
 const Login = () => {
   const language = useSelector((state: RootState) => state.language)
+  const router = useRouter()
 
   const textContent =
     language === 'ko'
@@ -27,7 +30,7 @@ const Login = () => {
 
   return (
     <div className="flex h-screen w-[600px] flex-col items-start justify-center gap-[314px] bg-gray-100 px-9 py-36">
-      <div className="flex w-[528px] flex-col gap-4 py-8">
+      <div className="flex w-[528px] animate-fadein flex-col gap-4 py-8">
         <p className="font-notosanko text-[28px] font-bold">
           {textContent.welcome.split('\n').map((text, index) => (
             <span key={index}>
@@ -41,13 +44,28 @@ const Login = () => {
         </p>
       </div>
       <div className="flex w-[528px] flex-col gap-6 rounded-sm px-6 py-12">
-        <button className="flex items-center justify-between bg-white px-4 py-[10px] hover:bg-slate-50">
+        <button
+          onClick={() =>
+            router.push(
+              '/auth/token?accessToken=test_access_token&refreshToken=test_refresh_token',
+            )
+          }
+          className="flex items-center justify-between bg-white px-4 py-[10px] hover:bg-slate-50"
+        >
           <img src="/icon/google.svg" alt="google" width="24" height="24" />
           <p className="flex-1 font-notosanko text-[12px] font-medium">
             {textContent.google}
           </p>
         </button>
-        <button className="flex items-center bg-yellow-300 px-4 py-[10px] hover:bg-yellow-200">
+
+        <button
+          onClick={() =>
+            router.push(
+              '/auth/token?accessToken=test_access_token&refreshToken=test_refresh_token',
+            )
+          }
+          className="flex items-center bg-yellow-300 px-4 py-[10px] hover:bg-yellow-200"
+        >
           <img src="/icon/kakao.svg" alt="kakao" width="24" height="24" />
           <p className="flex-1 font-notosanko text-[12px] font-medium">
             {textContent.kakao}
