@@ -1,8 +1,6 @@
 'use client'
 
-import Header from '@/components/Header/Header'
 import { RootState } from '@/redux/store'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useSelector } from 'react-redux'
 

@@ -4,6 +4,7 @@ import { MSWComponent } from '@/api/MSWComponent'
 import { cn } from '@/lib/utils'
 import ReactQueryProvider from '@/providers/ReactQueryProvider'
 import ReduxProvider from '@/providers/ReduxProvider'
+import { WeatherProvider } from '@/providers/WeatherProviter'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -21,14 +22,18 @@ export default function RootLayout({
           <MSWComponent>
             <ReactQueryProvider>
               <ReduxProvider>
-                <div className="container">{children}</div>
+                <WeatherProvider>
+                  <div className="container">{children}</div>
+                </WeatherProvider>
               </ReduxProvider>
             </ReactQueryProvider>
           </MSWComponent>
         ) : (
           <ReactQueryProvider>
             <ReduxProvider>
-              <div>{children}</div>
+              <WeatherProvider>
+                <div>{children}</div>
+              </WeatherProvider>
             </ReduxProvider>
           </ReactQueryProvider>
         )}
