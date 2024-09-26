@@ -37,7 +37,7 @@ export const TodayWeatherInfo: React.FC<{ todayWeather: WeatherResponse }> = ({
     <div className="flex h-[97px] w-full content-center items-start self-stretch">
       {
         <div className="flex w-full flex-row justify-between">
-          <div className="flex flex-col gap-[8px]">
+          <div className="flex-1 flex-col gap-[8px]">
             <h1 className="font-notosanko text-weatherTitle">
               {language == 'ko' && translatedText
                 ? translatedText[0]?.translations[0]?.text
