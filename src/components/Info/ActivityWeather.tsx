@@ -1,9 +1,12 @@
-import { WeatherResponse } from '@/api'
+import { ActivityStyle, ActivityType, WeatherResponse } from '@/api'
 import { useTranslate } from '@/hooks/useTranslate/useTranslate'
 import { RootState } from '@/redux/store'
 import { useSelector } from 'react-redux'
 import { formatDate } from '../Date/formatDate'
 import { useEffect } from 'react'
+import { translateActivityStyle, translateActivityType } from './translation'
+
+type Language = 'en' | 'ko'
 
 // 날씨 데이터를 필터링하는 함수
 const filterWeatherByTime = (
@@ -25,11 +28,14 @@ export const ActivityWeather: React.FC<{
   todayWeather: WeatherResponse
   startTime: string
   endTime: string
-  type: string
-  style: string
+  type: ActivityType
+  style: ActivityStyle
 }> = ({ todayWeather, startTime, endTime, type, style }) => {
-  const language = useSelector((state: RootState) => state.language)
+  const language = useSelector((state: RootState) => state.language) as Language
   const { translatedText, translate } = useTranslate()
+
+  const translatedType = translateActivityType(type, language)
+  const translatedStyle = translateActivityStyle(style, language)
 
   useEffect(() => {
     if (todayWeather?.city.name && language == 'ko') {
@@ -117,7 +123,7 @@ export const ActivityWeather: React.FC<{
             {formatDate(language)}
           </span>
           <span className="font-notosanko text-[20px] font-medium">
-            {type}, {style}
+            {translatedType}, {translatedStyle}
           </span>
         </div>
 

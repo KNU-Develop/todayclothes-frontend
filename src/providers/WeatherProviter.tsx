@@ -5,7 +5,10 @@ import React, { createContext, ReactNode, useContext, useState } from 'react'
 
 // WeatherData 타입 정의
 type WeatherData = {
-  location?: string
+  location: {
+    lat: number
+    lon: number
+  }
   startTime?: string
   endTime?: string
 }

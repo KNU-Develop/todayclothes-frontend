@@ -14,13 +14,17 @@ import Header from '@/components/Header/Header'
 import { ActivityWeather } from '@/components/Info/ActivityWeather'
 import { WeatherSave } from '@/components/Info/Weather'
 import NavigationBar from '@/components/NavigationBar/NavigationBar'
+import { useTranslate } from '@/hooks/useTranslate/useTranslate'
 import { useWeatherContext } from '@/providers/WeatherProviter'
+import { RootState } from '@/redux/store'
 import { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 const Recommend = () => {
   const [geolocation, setGeolocation] = useState<coordinate | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
+  const language = useSelector((state: RootState) => state.language)
+  const { translate, translatedText } = useTranslate()
   const dispatch = useDispatch()
 
   const { weatherData } = useWeatherContext()
@@ -35,17 +39,22 @@ const Recommend = () => {
     },
   )
 
-  // 현재 브라우저 좌표 탐색
+  // weatherData의 location을 geolocation으로 설정
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setGeolocation({
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
-        })
+    if (weatherData?.location) {
+      setGeolocation({
+        lat: weatherData.location.lat,
+        lon: weatherData.location.lon,
       })
     }
-  }, [geolocation == null])
+  }, [weatherData?.location])
+
+  //comment 번역
+  useEffect(() => {
+    if (activity?.result.comment && language == 'en') {
+      translate(activity?.result.comment, language)
+    }
+  }, [activity?.result.comment, language])
 
   // 체감 온도에 해당하는 온도 설정(so_hot, hot...)
   useEffect(() => {
@@ -65,23 +74,18 @@ const Recommend = () => {
           <Header />
           <ActivityWeather
             todayWeather={todayWeather as WeatherResponse}
-            startTime={weatherData?.startTime || '2024-09-27T00:00Z'}
-            endTime={weatherData?.endTime || '2024-09-27T12:00Z'}
+            startTime={weatherData?.startTime || '2024-09-27T12:00Z'}
+            endTime={weatherData?.endTime || '2024-09-27T18:00Z'}
             type={activity?.result.type || ActivityType.Indoor}
             style={activity?.result.style || ActivityStyle.BusinessCasual}
           />
           <img src={activity?.result.imgPath} alt="이미지" />
           <p className="text-[20px] font-semibold text-gray-500">
-            {activity?.result.comment}
+            {language == 'en' && translatedText
+              ? translatedText[0]?.translations[0]?.text
+              : activity?.result.comment}
           </p>
           <NavigationBar color="zinc" />
-          {/* weatherData 출력
-          {weatherData && (
-            <div>
-              <h2>Weather Data:</h2>
-              <pre>{JSON.stringify(weatherData, null, 2)}</pre>
-            </div>
-          )} */}
         </>
       ) : (
         <LoadingAvatar />
