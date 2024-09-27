@@ -149,14 +149,14 @@ const PlansModal: React.FC = () => {
                             onClick={handleTimeCancel}
                             className="w-2/5 rounded-[8px] bg-red-100 text-red-600"
                           >
-                            취소
+                            {language === 'ko' ? '취소' : 'Cancel'}
                           </button>
                           <button
                             type="button"
                             onClick={handleTimeConfirm}
                             className="h-[30px] w-2/5 rounded-[8px] bg-red-500 text-white"
                           >
-                            확인
+                            {language === 'ko' ? '확인' : 'Confirm'}
                           </button>
                         </div>
                       </div>
