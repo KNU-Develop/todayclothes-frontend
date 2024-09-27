@@ -5,7 +5,9 @@ import { useModal } from '@/hooks/useModal/useModal'
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs, { Dayjs } from 'dayjs'
-import GooglePlacesAutocomplete from 'react-google-places-autocomplete' // Google Places Autocomplete 추가
+import GooglePlacesAutocomplete, {
+  geocodeByPlaceId,
+} from 'react-google-places-autocomplete'
 
 interface Option {
   label: string
@@ -25,7 +27,11 @@ const PlansModal: React.FC = () => {
   const [startTime, setStartTime] = useState<Dayjs | null>(null)
   const [endTime, setEndTime] = useState<Dayjs | null>(null)
   const [isTimePickerOpen, setTimePickerOpen] = useState(false)
-  const [selectedPlace, setSelectedPlace] = useState<Option | null>(null) // Option 타입으로 수정
+  const [selectedPlace, setSelectedPlace] = useState<Option | null>(null)
+  const [placeCoordinates, setPlaceCoordinates] = useState<{
+    lat: number | null
+    lng: number | null
+  }>({ lat: null, lng: null })
 
   const activityStyles =
     language === 'ko'
@@ -61,10 +67,26 @@ const PlansModal: React.FC = () => {
     setTimePickerOpen(false)
   }
 
+  const handlePlaceChange = async (newValue: any) => {
+    setSelectedPlace(newValue)
+
+    if (newValue?.value?.place_id) {
+      const results = await geocodeByPlaceId(newValue.value.place_id)
+
+      if (results[0]?.geometry?.location) {
+        setPlaceCoordinates({
+          lat: results[0].geometry.location.lat(),
+          lng: results[0].geometry.location.lng(),
+        })
+      }
+    }
+  }
+
   const handleLog = () => {
     console.log('Start Time:', startTime)
     console.log('End Time:', endTime)
-    console.log('Selected Place:', selectedPlace) // 선택된 장소 출력
+    console.log('Selected Place:', selectedPlace)
+    console.log('Place Coordinates:', placeCoordinates)
   }
 
   return (
@@ -151,14 +173,13 @@ const PlansModal: React.FC = () => {
                 <GooglePlacesAutocomplete
                   selectProps={{
                     value: selectedPlace,
-                    onChange: (newValue) =>
-                      setSelectedPlace(newValue as Option), // 타입 변환 추가
+                    onChange: handlePlaceChange,
                     placeholder:
                       language === 'ko'
                         ? '활동 장소를 입력하세요.'
                         : 'Enter activity location.',
                   }}
-                  apiKey="AIzaSyDwc2OTKdRIff0dY0eB640xRV_6DGTUcWY" // 실제 Google Maps API 키로 대체해야 합니다.
+                  apiKey="AIzaSyDwc2OTKdRIff0dY0eB640xRV_6DGTUcWY"
                 />
               </div>
 
