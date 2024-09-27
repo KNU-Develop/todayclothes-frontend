@@ -134,12 +134,12 @@ const PlansModal: React.FC = () => {
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <div className="mb-2 flex flex-col gap-[10px] p-2">
                         <TimePicker
-                          label="시작 시간"
+                          label={language === 'ko' ? '시작 시간' : 'Start Time'}
                           value={startTime}
                           onChange={(newValue) => setStartTime(newValue)}
                         />
                         <TimePicker
-                          label="종료 시간"
+                          label={language === 'ko' ? '종료 시간' : 'End Time'}
                           value={endTime}
                           onChange={(newValue) => setEndTime(newValue)}
                         />
