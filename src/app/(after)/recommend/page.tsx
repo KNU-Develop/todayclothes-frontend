@@ -79,7 +79,11 @@ const Recommend = () => {
             type={activity?.result.type || ActivityType.Indoor}
             style={activity?.result.style || ActivityStyle.BusinessCasual}
           />
-          <img src={activity?.result.imgPath} alt="이미지" />
+          <img
+            src={activity?.result.imgPath}
+            alt="이미지"
+            className="h-[600px] w-full py-[30px]"
+          />
           <p className="text-[20px] font-semibold text-gray-500">
             {language == 'en' && translatedText
               ? translatedText[0]?.translations[0]?.text
