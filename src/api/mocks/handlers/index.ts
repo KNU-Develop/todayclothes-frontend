@@ -1,4 +1,4 @@
 import { recommendHandlers } from './recommend'
+import { HistoryHandler } from './history'
 
-//handlers 추가해서 사용
-export const handlers = [...recommendHandlers]
+export const handlers = [...HistoryHandler, ...recommendHandlers]
