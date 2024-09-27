@@ -5,6 +5,12 @@ import { useModal } from '@/hooks/useModal/useModal'
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs, { Dayjs } from 'dayjs'
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete' // Google Places Autocomplete 추가
+
+interface Option {
+  label: string
+  value: string
+}
 
 const PlansModal: React.FC = () => {
   const { isVisible, openModal, closeModal } = useModal()
@@ -16,13 +22,11 @@ const PlansModal: React.FC = () => {
     'Indoors' | 'Outdoors' | null
   >(null)
   const [activityStyle, setActivityStyle] = useState<string | null>(null)
-
-  // 상태 추가: 시작 시간, 끝 시간 및 타임 피커 열기 여부
   const [startTime, setStartTime] = useState<Dayjs | null>(null)
   const [endTime, setEndTime] = useState<Dayjs | null>(null)
   const [isTimePickerOpen, setTimePickerOpen] = useState(false)
+  const [selectedPlace, setSelectedPlace] = useState<Option | null>(null) // Option 타입으로 수정
 
-  // 스타일을 영어와 한글로 나누어 정의
   const activityStyles =
     language === 'ko'
       ? [
@@ -43,17 +47,14 @@ const PlansModal: React.FC = () => {
     setActivityStyle(style)
   }
 
-  // 타임 피커 열기
   const handleTimeInputClick = () => {
-    setTimePickerOpen(!isTimePickerOpen) // Toggle dropdown visibility
+    setTimePickerOpen(!isTimePickerOpen)
   }
 
-  // 타임 선택 확인
   const handleTimeConfirm = () => {
     setTimePickerOpen(false)
   }
 
-  // 타임 선택 취소
   const handleTimeCancel = () => {
     setStartTime(null)
     setEndTime(null)
@@ -61,7 +62,9 @@ const PlansModal: React.FC = () => {
   }
 
   const handleLog = () => {
-    console.log(startTime, endTime)
+    console.log('Start Time:', startTime)
+    console.log('End Time:', endTime)
+    console.log('Selected Place:', selectedPlace) // 선택된 장소 출력
   }
 
   return (
@@ -104,7 +107,6 @@ const PlansModal: React.FC = () => {
                   }
                   readOnly
                 />
-                {/* Time Picker Dropdown */}
                 {isTimePickerOpen && (
                   <div className="absolute left-1/2 z-10 mt-2 flex max-w-[300px] -translate-x-1/2 rounded-[8px] bg-white shadow-lg">
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -141,20 +143,22 @@ const PlansModal: React.FC = () => {
                 )}
               </div>
 
-              {/* Activity Location */}
+              {/* Activity Location - Google Places Autocomplete */}
               <div>
                 <label className="font-noto-sans-kr text-[12px] font-medium leading-normal text-zinc-400">
                   {language === 'ko' ? '활동 장소' : 'Activity Location'}
                 </label>
-                <input
-                  type="text"
-                  placeholder={
-                    language === 'ko'
-                      ? '활동 장소를 선택해주세요.'
-                      : 'Please select the activity type.'
-                  }
-                  className="w-full rounded-[8px] bg-gray-100 px-4 py-2 text-gray-400"
-                  disabled
+                <GooglePlacesAutocomplete
+                  selectProps={{
+                    value: selectedPlace,
+                    onChange: (newValue) =>
+                      setSelectedPlace(newValue as Option), // 타입 변환 추가
+                    placeholder:
+                      language === 'ko'
+                        ? '활동 장소를 입력하세요.'
+                        : 'Enter activity location.',
+                  }}
+                  apiKey="AIzaSyDwc2OTKdRIff0dY0eB640xRV_6DGTUcWY" // 실제 Google Maps API 키로 대체해야 합니다.
                 />
               </div>
 
