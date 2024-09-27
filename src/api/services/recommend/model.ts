@@ -44,3 +44,7 @@ export interface ActivityWeatherResponse {
     temp: number
   }
 }
+
+export interface DefaultResponse {
+  code: string
+}

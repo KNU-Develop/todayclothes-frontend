@@ -1,22 +1,26 @@
-import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query'
+import {
+  MutationOptions,
+  QueryClient,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query'
 import { ActivityService } from './service'
-import { CustomQueryOptions } from '@/api/type'
-import { ActivityWeatherResponse } from './model'
+import { ActivityWeatherInfo, ActivityWeatherResponse } from './model'
 
 export const activityOptions = {
-  activityWeatherInfo: (client: QueryClient) => ({
-    queryKey: ['activity'],
-    queryFn: () => ActivityService.activityInfo(client),
+  activityWeatherInfo: (client: QueryClient, dto: ActivityWeatherInfo) => ({
+    mutationFn: () => ActivityService.activityInfo(client, dto),
   }),
 }
 
-export const useActivityQuery = (
-  options: CustomQueryOptions<ActivityWeatherResponse>={},
+export const useActivityInfo = (
+  dto: ActivityWeatherInfo,
+  options: MutationOptions<ActivityWeatherResponse> = {},
 ) => {
   const queryClient = useQueryClient()
 
-  return useQuery<ActivityWeatherResponse>({
-    ...activityOptions.activityWeatherInfo(queryClient),
+  return useMutation<ActivityWeatherResponse>({
+    ...activityOptions.activityWeatherInfo(queryClient, dto),
     ...options,
   })
 }

@@ -6,4 +6,4 @@ export { useTodayWeatherQuery } from './services/weather/quries'
 
 //Recommend
 export { ActivityType, ActivityStyle } from './services/recommend/model'
-export { useActivityQuery } from './services/recommend/quries'
+export { useActivityInfo } from './services/recommend/quries'

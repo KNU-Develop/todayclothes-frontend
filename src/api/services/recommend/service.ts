@@ -1,14 +1,14 @@
 import { QueryClient } from '@tanstack/react-query'
-import { ActivityWeatherResponse } from './model'
+import { ActivityWeatherInfo, ActivityWeatherResponse } from './model'
 import { APIBuilder } from '@/api/lib/fetcher'
 
 export const ActivityService = {
-  async activityInfo(client: QueryClient) {
+  async activityInfo(client: QueryClient, dto: ActivityWeatherInfo) {
     return (
-      APIBuilder.get('/clothes')
+      APIBuilder.post('/clothes')
         // .withCredentials(client)
         .build()
-        .call<ActivityWeatherResponse>()
+        .call<ActivityWeatherResponse>({body: JSON.stringify(dto)})
     )
   },
 }
