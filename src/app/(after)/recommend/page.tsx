@@ -37,8 +37,8 @@ const Recommend = () => {
         start: weatherData?.startTime || '',
         end: weatherData?.endTime || '',
       },
-      type: ActivityType.Indoor,
-      style: ActivityStyle.Amekaji,
+      type: weatherData?.type || ActivityType.Indoor,
+      style: weatherData?.style || ActivityStyle.Amekaji,
       wind: activityWeather.wind,
       rain: activityWeather.rain,
       humidity: activityWeather.humidity,
@@ -103,8 +103,8 @@ const Recommend = () => {
             todayWeather={todayWeather as WeatherResponse}
             startTime={weatherData?.startTime || '2024-09-27T12:00Z'}
             endTime={weatherData?.endTime || '2024-09-27T18:00Z'}
-            type={weatherData?.type || ActivityType.Indoor}
-            style={weatherData?.style || ActivityStyle.BusinessCasual}
+            type={activityInfo?.result.type || ActivityType.Indoor}
+            style={activityInfo?.result.style || ActivityStyle.BusinessCasual}
           />
           <img
             src={activityInfo?.result?.imgPath}

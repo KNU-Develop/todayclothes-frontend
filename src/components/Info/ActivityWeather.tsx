@@ -117,7 +117,7 @@ export const ActivityWeather: React.FC<{
             {formatDate(language)}
           </span>
           <span className="font-notosanko text-[20px] font-medium">
-            {translatedType},{translatedStyle}
+            {translatedType}, {translatedStyle}
           </span>
         </div>
 
