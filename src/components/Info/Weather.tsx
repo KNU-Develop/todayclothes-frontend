@@ -1,10 +1,10 @@
 'use client'
 
-import { WeatherResponse } from '@/api/services/weather/model'
+import { WeatherResponse } from '@/api'
 import { formatDate } from '../Date/formatDate'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useTranslate } from '@/hooks/useTranslate/useTranslate'
 import { setTemp } from '@/redux/slice/CurrentTempSlice'
 
@@ -44,7 +44,7 @@ export const TodayWeatherInfo: React.FC<{ todayWeather: WeatherResponse }> = ({
                 : todayWeather?.city.name}
             </h1>
             <span className="font-notosanko text-weatherSub text-weatherSubColor">
-              {formatDate()}
+              {formatDate(language)}
             </span>
           </div>
           <div className="flex flex-col content-center items-end">
@@ -58,8 +58,11 @@ export const TodayWeatherInfo: React.FC<{ todayWeather: WeatherResponse }> = ({
               {Math.round(todayWeather?.list[0].main.feels_like)}°C
             </p>
             <p className="font-notosanko text-weatherSpan text-weatherSubColor">
-              🌧️ {Math.round(rainPercent * 100)}% 💧{' '}
-              {Math.round(todayWeather?.list[0].main.humidity)}% 💨{' '}
+              <span className="font-toss">🌧️</span>{' '}
+              {Math.round(rainPercent * 100)}%{' '}
+              <span className="font-toss">💧</span>{' '}
+              {Math.round(todayWeather?.list[0].main.humidity)}%{' '}
+              <span className="font-toss">💨</span>{' '}
               {Math.round(todayWeather?.list[0].wind.speed * 3.6)}
               km/h
             </p>
