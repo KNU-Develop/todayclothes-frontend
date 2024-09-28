@@ -22,11 +22,33 @@ export interface ActivityWeatherInfo {
   time: ActivityTime
   type: ActivityType
   style: ActivityStyle
+  weather: number
   wind: number
   rain: number
   humidity: number
   feelsLike: number
   temp: number
+}
+
+export interface activityHistoryInfo {
+  clothesId: string
+  imgPath: string
+  location: string
+  type: ActivityType
+  style: ActivityStyle
+  review: WeatherReview
+  weather: number
+  wind: number
+  rain: number
+  humidity: number
+  feelsLike: number
+  temp: number
+}
+
+export interface activityHistoryResponse {
+  code: number
+  state: string
+  result: activityHistoryInfo[] | []
 }
 
 export interface ActivityWeatherResponse {
@@ -37,12 +59,29 @@ export interface ActivityWeatherResponse {
     comment: string
     type: ActivityType
     style: ActivityStyle
+    weather: number
     wind: number
     rain: number
     humidity: number
     feelsLike: number
     temp: number
   }
+}
+
+export interface WeatherReview {
+  feedback: string
+}
+
+export interface ActivityReview {
+  clothesId: string
+  feedback: string
+  imageFile?: File
+}
+
+export interface ActivityReviewResponse {
+  code: number
+  state: string
+  result: null
 }
 
 export interface DefaultResponse {
