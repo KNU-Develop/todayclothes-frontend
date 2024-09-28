@@ -2,7 +2,7 @@ import { ActivityStyle, ActivityType } from '@/api'
 
 type Language = 'en' | 'ko'
 
-// ActivityTypeTranslation 객체에 타입 추가
+//번역
 const ActivityTypeTranslation: Record<
   Language,
   Record<ActivityType, string>

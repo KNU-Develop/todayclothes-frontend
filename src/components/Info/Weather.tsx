@@ -58,8 +58,11 @@ export const TodayWeatherInfo: React.FC<{ todayWeather: WeatherResponse }> = ({
               {Math.round(todayWeather?.list[0].main.feels_like)}°C
             </p>
             <p className="font-notosanko text-weatherSpan text-weatherSubColor">
-              🌧️ {Math.round(rainPercent * 100)}% 💧{' '}
-              {Math.round(todayWeather?.list[0].main.humidity)}% 💨{' '}
+              <span className="font-toss">🌧️</span>{' '}
+              {Math.round(rainPercent * 100)}%{' '}
+              <span className="font-toss">💧</span>{' '}
+              {Math.round(todayWeather?.list[0].main.humidity)}%{' '}
+              <span className="font-toss">💨</span>{' '}
               {Math.round(todayWeather?.list[0].wind.speed * 3.6)}
               km/h
             </p>

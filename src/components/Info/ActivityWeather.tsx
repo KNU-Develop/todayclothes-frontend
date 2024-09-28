@@ -1,12 +1,22 @@
 import { ActivityStyle, ActivityType, WeatherResponse } from '@/api'
 import { useTranslate } from '@/hooks/useTranslate/useTranslate'
 import { RootState } from '@/redux/store'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { formatDate } from '../Date/formatDate'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { translateActivityStyle, translateActivityType } from './translation'
+import { setActivityWeather } from '@/redux/slice/activityWeatherSlice'
+import { getWeatherDescription } from './condition'
 
 type Language = 'en' | 'ko'
+
+type WeatherData = {
+  wind: number
+  rain: number
+  humidity: number
+  feelsLike: number
+  temp: number
+}
 
 // 날씨 데이터를 필터링하는 함수
 const filterWeatherByTime = (
@@ -14,9 +24,7 @@ const filterWeatherByTime = (
   startTime: string,
   endTime: string,
 ) => {
-  if (!weatherList) {
-    return [] // weatherList가 없을 경우 빈 배열 반환
-  }
+  if (!weatherList) return []
 
   return weatherList.filter((item) => {
     const itemTime = new Date(item.dt * 1000) // Unix timestamp -> Date 변환
@@ -32,18 +40,18 @@ export const ActivityWeather: React.FC<{
   style: ActivityStyle
 }> = ({ todayWeather, startTime, endTime, type, style }) => {
   const language = useSelector((state: RootState) => state.language) as Language
+  const dispatch = useDispatch()
   const { translatedText, translate } = useTranslate()
 
   const translatedType = translateActivityType(type, language)
   const translatedStyle = translateActivityStyle(style, language)
 
   useEffect(() => {
-    if (todayWeather?.city.name && language == 'ko') {
-      translate(todayWeather?.city.name, language)
+    if (todayWeather?.city.name && language === 'ko') {
+      translate(todayWeather.city.name, language)
     }
   }, [todayWeather?.city.name, language])
 
-  // 입력된 시간 범위에 맞는 날씨 데이터를 필터링
   const filteredWeather = filterWeatherByTime(
     todayWeather?.list,
     startTime,
@@ -51,71 +59,57 @@ export const ActivityWeather: React.FC<{
   )
 
   if (!filteredWeather.length) {
-    return <p>No weather data available for the selected time range.</p> // 필터링된 데이터가 없을 때 처리
+    return <p>No weather data available for the selected time range.</p>
   }
 
-  // 평균 온도 계산
-  const averageTemperature =
-    filteredWeather.reduce((sum, item) => sum + item.main.temp, 0) /
+  // 평균 온도 및 체감 온도 계산
+  const calculateAverage = (
+    key: keyof (typeof filteredWeather)[number]['main'],
+  ) =>
+    filteredWeather.reduce((sum, item) => sum + item.main[key], 0) /
     filteredWeather.length
 
-  const averageFeelsLike =
-    filteredWeather.reduce((sum, item) => sum + item.main.feels_like, 0) /
-    filteredWeather.length
+  const averageTemperature = calculateAverage('temp')
+  const averageFeelsLike = calculateAverage('feels_like')
 
-  // 첫 번째 날씨 상태 정보를 가져옴
   const weatherCondition = filteredWeather[0].weather[0]
-
-  // 날씨 상태를 구분하는 함수
-  const getWeatherDescription = (conditionId: number) => {
-    let description = ''
-    let emoji = ''
-
-    if (conditionId >= 200 && conditionId <= 232) {
-      description = language === 'ko' ? '천둥번개' : 'Thunderstorm'
-      emoji = '⛈️'
-    } else if (conditionId >= 300 && conditionId <= 321) {
-      description = language === 'ko' ? '이슬비' : 'Drizzle'
-      emoji = '🌧️'
-    } else if (conditionId >= 500 && conditionId <= 504) {
-      description = language === 'ko' ? '비' : 'Rain'
-      emoji = '🌧️'
-    } else if (conditionId === 511) {
-      description = language === 'ko' ? '얼어붙은 비' : 'Freezing Rain'
-      emoji = '🌧️'
-    } else if (conditionId >= 520 && conditionId <= 531) {
-      description = language === 'ko' ? '소나기' : 'Shower Rain'
-      emoji = '🌦️'
-    } else if (conditionId >= 600 && conditionId <= 622) {
-      description = language === 'ko' ? '눈' : 'Snow'
-      emoji = '❄️'
-    } else if (conditionId >= 701 && conditionId <= 781) {
-      description = language === 'ko' ? '안개' : 'Fog'
-      emoji = '🌫️'
-    } else if (conditionId === 800) {
-      description = language === 'ko' ? '맑음' : 'Clear'
-      emoji = '☀️'
-    } else if (conditionId >= 801 && conditionId <= 803) {
-      description = language === 'ko' ? '구름 많음' : 'Cloudy'
-      emoji = '🌥️'
-    } else if (conditionId === 804) {
-      description = language === 'ko' ? '흐림' : 'Overcast'
-      emoji = '☁️'
-    }
-
-    return { description, emoji }
-  }
 
   const { description: weatherDescription, emoji } = getWeatherDescription(
     weatherCondition.id,
+    language,
   )
+
+  const previousWeatherDataRef = useRef<WeatherData | null>(null)
+
+  useEffect(() => {
+    if (filteredWeather.length > 0) {
+      const weatherData = {
+        wind: Math.round(filteredWeather[0].wind.speed * 3.6),
+        rain: Math.round(filteredWeather[0].pop * 100),
+        humidity: Math.round(filteredWeather[0].main.humidity),
+        feelsLike: Math.round(averageFeelsLike),
+        temp: Math.round(averageTemperature),
+      }
+
+      // 이전 날씨 데이터와 비교
+      if (
+        !previousWeatherDataRef.current ||
+        JSON.stringify(previousWeatherDataRef.current) !==
+          JSON.stringify(weatherData)
+      ) {
+        // 상태가 변경된 경우에만 dispatch 호출
+        dispatch(setActivityWeather(weatherData))
+        previousWeatherDataRef.current = weatherData
+      }
+    }
+  }, [dispatch, filteredWeather, averageFeelsLike, averageTemperature])
 
   return (
     <div className="flex w-full content-center items-start self-stretch">
       <div className="flex w-full flex-row justify-between">
         <div className="flex flex-col gap-[8px]">
           <h1 className="font-notosanko text-weatherTitle">
-            {language == 'ko' && translatedText
+            {language === 'ko' && translatedText
               ? translatedText[0]?.translations[0]?.text
               : todayWeather?.city.name}
           </h1>
@@ -123,7 +117,7 @@ export const ActivityWeather: React.FC<{
             {formatDate(language)}
           </span>
           <span className="font-notosanko text-[20px] font-medium">
-            {translatedType}, {translatedStyle}
+            {translatedType},{translatedStyle}
           </span>
         </div>
 
@@ -133,12 +127,15 @@ export const ActivityWeather: React.FC<{
             {Math.round(averageTemperature)}°C ({weatherDescription})
           </h1>
           <p className="font-notosanko text-weatherSpan text-weatherSpanColor">
-            {language == 'en' ? 'Feels Like: ' : '체감온도: '}{' '}
+            {language === 'en' ? 'Feels Like: ' : '체감온도: '}{' '}
             {Math.round(averageFeelsLike)}°C
           </p>
           <p className="font-notosanko text-weatherSpan text-weatherSubColor">
-            🌧️ {Math.round(filteredWeather[0].pop * 100)}% 💧{' '}
-            {Math.round(filteredWeather[0].main.humidity)}% 💨{' '}
+            <span className="font-toss">🌧️</span>{' '}
+            {Math.round(filteredWeather[0].pop * 100)}%{' '}
+            <span className="font-toss">💧</span>{' '}
+            {Math.round(filteredWeather[0].main.humidity)}%{' '}
+            <span className="font-toss">💨</span>{' '}
             {Math.round(filteredWeather[0].wind.speed * 3.6)}km/h
           </p>
         </div>

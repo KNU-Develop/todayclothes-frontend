@@ -1,6 +1,7 @@
 // WeatherProvider.tsx
 'use client'
 
+import { ActivityStyle, ActivityType } from '@/api'
 import React, { createContext, ReactNode, useContext, useState } from 'react'
 
 // WeatherData 타입 정의
@@ -11,6 +12,8 @@ type WeatherData = {
   }
   startTime?: string
   endTime?: string
+  type: ActivityType
+  style: ActivityStyle
 }
 
 // WeatherContext와 Provider 생성

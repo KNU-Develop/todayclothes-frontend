@@ -4,12 +4,15 @@
 import React, { FormEvent, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useWeatherContext } from '@/providers/WeatherProviter'
+import { ActivityStyle, ActivityType } from '@/api'
 
 const TestPage = () => {
   const [latitude, setLatitude] = useState('')
   const [longitude, setLongitude] = useState('')
   const [startTime, setStartTime] = useState('')
   const [endTime, setEndTime] = useState('')
+  const [activityType, setActivityType] = useState('') // 추가: activityType 상태
+  const [activityStyle, setActivityStyle] = useState('') // 추가: activityStyle 상태
   const router = useRouter()
   const { setWeatherData } = useWeatherContext() // 컨텍스트에서 setWeatherData 가져오기
 
@@ -24,6 +27,8 @@ const TestPage = () => {
       },
       startTime: `${startTime}Z`, // 'Z'를 붙임
       endTime: `${endTime}Z`, // 'Z'를 붙임
+      type: activityType as ActivityType, // 추가: type 추가
+      style: activityStyle as ActivityStyle, // 추가: style 추가
     })
 
     // /recommend로 리다이렉트
@@ -70,6 +75,26 @@ const TestPage = () => {
             value={endTime}
             onChange={(e) => setEndTime(e.target.value)}
             required
+          />
+        </label>
+        <label>
+          Activity Type: {/* 추가: Activity Type 입력 */}
+          <input
+            type="text"
+            value={activityType}
+            onChange={(e) => setActivityType(e.target.value)}
+            required
+            placeholder="Enter activity type"
+          />
+        </label>
+        <label>
+          Activity Style: {/* 추가: Activity Style 입력 */}
+          <input
+            type="text"
+            value={activityStyle}
+            onChange={(e) => setActivityStyle(e.target.value)}
+            required
+            placeholder="Enter activity style"
           />
         </label>
         <button type="submit">Submit</button>

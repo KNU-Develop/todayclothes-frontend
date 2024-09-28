@@ -5,31 +5,55 @@ import {
   ActivityStyle,
   ActivityType,
   coordinate,
-  useActivityQuery,
+  useActivityInfo,
   useTodayWeatherQuery,
   WeatherResponse,
 } from '@/api'
 import { LoadingAvatar } from '@/components/Avatar/Avatar'
 import Header from '@/components/Header/Header'
 import { ActivityWeather } from '@/components/Info/ActivityWeather'
-import { WeatherSave } from '@/components/Info/Weather'
 import NavigationBar from '@/components/NavigationBar/NavigationBar'
 import { useTranslate } from '@/hooks/useTranslate/useTranslate'
 import { useWeatherContext } from '@/providers/WeatherProviter'
 import { RootState } from '@/redux/store'
 import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 const Recommend = () => {
   const [geolocation, setGeolocation] = useState<coordinate | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const language = useSelector((state: RootState) => state.language)
+  const activityWeather = useSelector(
+    (state: RootState) => state.activityWeather,
+  )
   const { translate, translatedText } = useTranslate()
-  const dispatch = useDispatch()
-
   const { weatherData } = useWeatherContext()
 
-  const { data: activity } = useActivityQuery()
+  // POST
+  const { data: activityInfo, mutate: mutateActivityInfo } = useActivityInfo(
+    {
+      location: '서울',
+      time: {
+        start: weatherData?.startTime || '',
+        end: weatherData?.endTime || '',
+      },
+      type: ActivityType.Indoor,
+      style: ActivityStyle.Amekaji,
+      wind: activityWeather.wind,
+      rain: activityWeather.rain,
+      humidity: activityWeather.humidity,
+      feelsLike: activityWeather.feelsLike,
+      temp: activityWeather.temp,
+    },
+    {
+      onSuccess: () => {
+        console.log('SUCCESS')
+      },
+      onError: (e) => {
+        console.log(e)
+      },
+    },
+  )
 
   const { data: todayWeather } = useTodayWeatherQuery(
     geolocation as coordinate,
@@ -39,7 +63,7 @@ const Recommend = () => {
     },
   )
 
-  // weatherData의 location을 geolocation으로 설정
+  // geolocation과 loading 상태에 따라 mutate 호출
   useEffect(() => {
     if (weatherData?.location) {
       setGeolocation({
@@ -47,19 +71,22 @@ const Recommend = () => {
         lon: weatherData.location.lon,
       })
     }
-  }, [weatherData?.location])
 
-  //comment 번역
-  useEffect(() => {
-    if (activity?.result.comment && language == 'en') {
-      translate(activity?.result.comment, language)
+    if (loading) {
+      mutateActivityInfo()
     }
-  }, [activity?.result.comment, language])
+  }, [weatherData?.location, loading, mutateActivityInfo])
 
-  // 체감 온도에 해당하는 온도 설정(so_hot, hot...)
+  // comment 번역
+  useEffect(() => {
+    if (activityInfo?.result?.comment && language === 'en') {
+      translate(activityInfo.result.comment, language)
+    }
+  }, [activityInfo?.result?.comment, language])
+
+  // todayWeather 로딩 상태 관리
   useEffect(() => {
     if (todayWeather) {
-      WeatherSave(todayWeather, dispatch)
       const timer = setTimeout(() => {
         setLoading(false)
       }, 2000)
@@ -76,18 +103,18 @@ const Recommend = () => {
             todayWeather={todayWeather as WeatherResponse}
             startTime={weatherData?.startTime || '2024-09-27T12:00Z'}
             endTime={weatherData?.endTime || '2024-09-27T18:00Z'}
-            type={activity?.result.type || ActivityType.Indoor}
-            style={activity?.result.style || ActivityStyle.BusinessCasual}
+            type={weatherData?.type || ActivityType.Indoor}
+            style={weatherData?.style || ActivityStyle.BusinessCasual}
           />
           <img
-            src={activity?.result.imgPath}
+            src={activityInfo?.result?.imgPath}
             alt="이미지"
             className="h-[600px] w-full py-[30px]"
           />
           <p className="text-[20px] font-semibold text-gray-500">
-            {language == 'en' && translatedText
+            {language === 'en' && translatedText
               ? translatedText[0]?.translations[0]?.text
-              : activity?.result.comment}
+              : activityInfo?.result?.comment}
           </p>
           <NavigationBar color="zinc" />
         </>
