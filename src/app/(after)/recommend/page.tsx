@@ -39,6 +39,7 @@ const Recommend = () => {
       },
       type: weatherData?.type || ActivityType.Indoor,
       style: weatherData?.style || ActivityStyle.Amekaji,
+      weather: 800,
       wind: activityWeather.wind,
       rain: activityWeather.rain,
       humidity: activityWeather.humidity,

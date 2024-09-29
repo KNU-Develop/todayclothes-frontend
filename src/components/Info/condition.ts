@@ -2,7 +2,10 @@
 
 type Language = 'en' | 'ko'
 
-export const getWeatherDescription = (conditionId: number, language: Language) => {
+export const getWeatherDescription = (
+  conditionId: number,
+  language: Language,
+) => {
   const weatherConditions = [
     { range: [200, 232], ko: '천둥번개', en: 'Thunderstorm', emoji: '⛈️' },
     { range: [300, 321], ko: '이슬비', en: 'Drizzle', emoji: '🌧️' },
