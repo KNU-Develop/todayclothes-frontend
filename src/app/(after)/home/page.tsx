@@ -80,10 +80,10 @@ const HomePage = () => {
 
   return (
     <div
-      className={`flex min-h-screen flex-col gap-[2vh] p-[2vw] bg-${!loading ? background : 'white'}`}
+      className={`flex min-h-screen flex-col p-[2vw] bg-${!loading ? background : 'white'}`}
     >
       {!loading && background ? (
-        <div>
+        <div className="flex flex-col gap-9">
           <Header />
           <TodayWeatherInfo todayWeather={todayWeather as WeatherResponse} />
           <HomeAvatar />

@@ -38,9 +38,9 @@ export const HistoryCard: React.FC<activityHistoryInfo> = (props) => {
         alt="error"
         width={520}
         height={540}
-        className="max-h-[548px] w-full max-w-[528px]"
+        className="h-[540px] w-[520px]"
       />
-      <div className="flex items-center justify-between rounded-[16px] bg-zinc-100 p-4 font-[16px]">
+      <div className="flex items-center justify-between rounded-[16px] bg-zinc-100 p-4 font-notosanko text-[16px]">
         {props.review.feedback ? (
           <span className={`${props.review.feedback ? 'text-zinc-400' : ''}`}>
             {language === 'en' ? 'Written Review' : '작성된 리뷰'}
@@ -51,7 +51,7 @@ export const HistoryCard: React.FC<activityHistoryInfo> = (props) => {
         {props.review.feedback ? (
           <div className="flex items-center gap-2">
             <span className="font-bold">{props.review.feedback}</span>
-            <span className="text-[1.5rem]">{reviewEmoji}</span>
+            <span className="font-toss text-[1.5rem]">{reviewEmoji}</span>
           </div>
         ) : (
           <Pencil

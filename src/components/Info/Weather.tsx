@@ -110,22 +110,21 @@ export const HistoryWeatherInfo: React.FC<activityHistoryInfo> = (props) => {
 
   return (
     <div className="flex w-full content-center items-start self-stretch">
-      <div className="flex w-full flex-row justify-between">
+      <div className="flex w-full flex-row justify-between font-notosanko">
         <div className="flex flex-col gap-[8px]">
-          <h1 className="font-notosanko text-weatherTitle">
+          <h1 className="text-weatherTitle">
             {language === 'ko' && translatedText
               ? translatedText[0]?.translations[0]?.text
               : props.location}
           </h1>
-          <span className="font-notosanko text-weatherSub text-weatherSubColor">
+          <span className="text-weatherSub text-weatherSubColor">
             {formatDate(language)}
           </span>
-          <span className="font-notosanko text-[20px] font-medium">
+          <span className="text-[20px] font-medium">
             {translateActivityType(props.type, language)},{' '}
             {translateActivityStyle(props.style, language)}
           </span>
         </div>
-
         <div className="flex flex-col content-center items-end gap-[8px]">
           <h1 className="font-notosanko text-weatherTem">
             <span className="font-toss">{emoji}</span> {Math.round(props.temp)}
