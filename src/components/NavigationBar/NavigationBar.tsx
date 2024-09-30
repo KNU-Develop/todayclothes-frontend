@@ -1,11 +1,14 @@
 import { History, Plus, RotateCw, User } from 'lucide-react'
 import { variants } from './style'
+import { useRouter } from 'next/navigation'
 
 type Color = 'zinc' | 'so_hot' | 'hot' | 'fresh' | 'cloud' | 'cold' | 'so_cold'
 
 const NavigationBar = ({ color }: { color: Color }) => {
+  const router = useRouter()
   const handleHistoryClick = () => {
     // History 클릭 시 동작
+    router.push('/history')
   }
 
   const handlePlusClick = () => {
@@ -22,7 +25,7 @@ const NavigationBar = ({ color }: { color: Color }) => {
 
   return (
     <div
-      className={`flex h-fit w-full items-center justify-between rounded-[40px] px-14 py-4 shadow-base ${variants[color].bg}`}
+      className={`flex h-fit w-full items-center justify-between rounded-[40px] px-14 py-2 shadow-base ${variants[color].bg}`}
     >
       <History
         size={'2.5em'}

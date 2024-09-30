@@ -38,7 +38,8 @@
     "react-google-places-autocomplete": "^4.1.0",
     "react-redux": "^9.1.2",
     "redux": "^5.0.1",
-    "tailwind-merge": "^2.5.2"
+    "tailwind-merge": "^2.5.2",
+    "tailwind-scrollbar-hide": "^1.1.7"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.5.0",

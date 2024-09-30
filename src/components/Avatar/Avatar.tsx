@@ -19,7 +19,7 @@ export const HomeAvatar = () => {
   const temp = useSelector((data: RootState) => data.currentTemp)
 
   const getImageArray = () => {
-    if (temp == null) return []
+    if (temp == null) return so_hotImage
     switch (temp) {
       case 'fresh':
         return freshImage
@@ -50,7 +50,7 @@ export const HomeAvatar = () => {
           alt="Avatar"
           width={200}
           height={450}
-          style={{ height: '45vh' }}
+          style={{ height: '55vh' }}
         />
       ) : (
         <p>No Image</p>

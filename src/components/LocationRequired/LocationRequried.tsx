@@ -5,7 +5,7 @@ const LocationRequired = () => {
   const language = useSelector((state: RootState) => state.language)
 
   return (
-    <div className="flex h-[120px] w-[528px] flex-shrink-0 items-center justify-center rounded-[8px] bg-white shadow-md">
+    <div className="flex h-[120px] w-full flex-shrink-0 items-center justify-center rounded-[8px] bg-white shadow-md">
       {language === 'ko' ? (
         <div className="font-notosanko text-[24px] font-bold">
           <span className="font-toss">📍</span> 위치 정보가 필요합니다.
