@@ -159,6 +159,7 @@ const PlansModal: React.FC = () => {
                               ? '활동 장소를 입력하세요.'
                               : 'Enter activity location.',
                         }}
+                        apiKey={process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY}
                       />
                     )}
                   />
