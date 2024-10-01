@@ -6,6 +6,8 @@ import { useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
 import { Pencil } from 'lucide-react'
 import { useActivityReview } from '@/api/services/recommend/quries'
+import { useModal } from '@/hooks/useModal/useModal'
+import ReviewModal from '../Modal/ReviewModal'
 
 type Language = 'en' | 'ko'
 
@@ -24,10 +26,10 @@ const getReviewEmoji = (review: string) => {
 export const HistoryCard: React.FC<activityHistoryInfo> = (props) => {
   const language = useSelector((state: RootState) => state.language) as Language
   const reviewEmoji = getReviewEmoji(props.review.feedback)
+  const { isVisible, openModal, closeModal } = useModal()
 
   const handleOnClick = () => {
-    // 추후 리뷰 모달과 연결
-    console.log('clicked')
+    openModal()
   }
 
   return (
@@ -61,6 +63,16 @@ export const HistoryCard: React.FC<activityHistoryInfo> = (props) => {
           />
         )}
       </div>
+
+      {isVisible && (
+        <>
+          <ReviewModal
+            clothesId={props.clothesId}
+            isVisible={isVisible}
+            closeModal={closeModal}
+          />
+        </>
+      )}
     </div>
   )
 }
