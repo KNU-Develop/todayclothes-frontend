@@ -233,9 +233,19 @@ const config = {
           '0%': { transform: 'translateY(-20px)', opacity: '0' }, // 시작 위치와 투명도
           '100%': { transform: 'translateY(0)', opacity: '1' }, // 끝 위치와 투명도
         },
+        modalFadein: {
+          '0%': { transform: 'translateY(-3px)', opacity: '0.5' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        modalFadeout: {
+          '0%': { transform: 'translateY(0)', opacity: '1' },
+          '100%': { transform: 'translateY(-3px)', opacity: '0.5' },
+        },
       },
       animation: {
         fadein: 'fadein 1s ease-out',
+        modalFadein: 'modalFadein 0.2s ease-out',
+        modalFadeout: 'modalFadeout 0.2s ease-in',
       },
     },
   },
