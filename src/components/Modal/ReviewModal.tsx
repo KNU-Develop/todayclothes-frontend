@@ -49,6 +49,9 @@ const ReviewModal = ({
 
   const handleImageClick = () => {
     fileInputRef.current?.click()
+    if (isCameraOn) {
+      stopCamera()
+    }
   }
 
   // 카메라 열기
@@ -160,7 +163,7 @@ const ReviewModal = ({
                     {language === 'ko' ? '옷차림 평가하기' : 'Outfit Feels'}
                   </p>
                   <div className="flex flex-col gap-4">
-                    {['perfect', 'too_hot', 'too_cold'].map((feel) => (
+                    {['Perfect', 'Too_Hot', 'Too_Cold'].map((feel) => (
                       <button
                         key={feel}
                         type="button"
@@ -170,16 +173,21 @@ const ReviewModal = ({
                             watch('selectedFeel') === feel ? null : feel,
                           )
                         }
-                        className={`flex items-center justify-center rounded-[16px] p-4 ${watch('selectedFeel') === feel ? 'bg-zinc-600 text-white' : 'bg-zinc-100'}`}
+                        className={`flex items-center justify-center rounded-[16px] p-4 ${
+                          watch('selectedFeel') === feel
+                            ? 'bg-zinc-600 text-white'
+                            : 'bg-zinc-100'
+                        }`}
                       >
                         {language === 'ko'
-                          ? feel === 'perfect'
+                          ? feel === 'Perfect'
                             ? '완벽함'
-                            : feel === 'too_hot'
+                            : feel === 'Too_Hot'
                               ? '너무 더움'
-                              : '너무 추움'
-                          : feel.charAt(0).toUpperCase() +
-                            feel.slice(1).replace(/_/g, ' ')}
+                              : feel === 'Too_Cold'
+                                ? '너무 추움'
+                                : ''
+                          : feel.replace(/_/g, ' ')}
                       </button>
                     ))}
                   </div>
