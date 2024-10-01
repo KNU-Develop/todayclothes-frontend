@@ -4,24 +4,27 @@ import { useRouter } from 'next/navigation'
 
 type Color = 'zinc' | 'so_hot' | 'hot' | 'fresh' | 'cloud' | 'cold' | 'so_cold'
 
-const NavigationBar = ({ color }: { color: Color }) => {
+interface NavigationBarProps {
+  color: Color
+  openModal: () => void // Ensure this prop is defined
+}
+
+const NavigationBar: React.FC<NavigationBarProps> = ({ color, openModal }) => {
   const router = useRouter()
+
   const handleHistoryClick = () => {
-    // History 클릭 시 동작
     router.push('/history')
   }
 
   const handlePlusClick = () => {
-    // Plus 클릭 시 동작
+    openModal()
   }
 
   const handleUserClick = () => {
     // User 클릭 시 동작
   }
 
-  const handleRotateClick = () => {
-    // Rotate 클릭 시 동작
-  }
+  const handleRotateClick = () => {}
 
   return (
     <div

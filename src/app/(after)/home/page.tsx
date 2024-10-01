@@ -7,11 +7,14 @@ import Header from '@/components/Header/Header'
 import { TodayWeatherInfo, WeatherSave } from '@/components/Info/Weather'
 import LocationRequired from '@/components/LocationRequired/LocationRequried'
 import NavigationBar from '@/components/NavigationBar/NavigationBar'
+import PlansModal from '@/components/PlansModal/PlansModal'
+import { useModal } from '@/hooks/useModal/useModal'
 import { RootState } from '@/redux/store'
 import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 const HomePage = () => {
+  const { isVisible, openModal, closeModal } = useModal()
   const [geolocation, setGeolocation] = useState<coordinate | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [navigatorError, setNavigatorError] = useState<boolean>(false)
@@ -73,7 +76,8 @@ const HomePage = () => {
         <Header />
         <LocationRequired />
         <HomeAvatar />
-        <NavigationBar color="so_hot" />
+        <NavigationBar color="so_hot" openModal={openModal} />
+        <PlansModal isVisible={isVisible} closeModal={closeModal} />
       </div>
     )
   }
@@ -87,7 +91,7 @@ const HomePage = () => {
           <Header />
           <TodayWeatherInfo todayWeather={todayWeather as WeatherResponse} />
           <HomeAvatar />
-          <NavigationBar color={background} />
+          <NavigationBar color={background} openModal={openModal} />
         </div>
       ) : (
         <div>

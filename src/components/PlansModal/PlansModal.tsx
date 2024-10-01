@@ -10,6 +10,11 @@ import GooglePlacesAutocomplete, {
   geocodeByPlaceId,
 } from 'react-google-places-autocomplete'
 
+interface PlansModalProps {
+  isVisible: boolean
+  closeModal: () => void
+}
+
 interface Option {
   label: string
   value: {
@@ -29,9 +34,7 @@ interface FormValues {
   }
 }
 
-const PlansModal: React.FC = () => {
-  const { isVisible, openModal, closeModal } = useModal()
-
+const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
   // Redux에서 언어 상태 가져오기
   const language = useSelector((state: RootState) => state.language)
 
@@ -90,13 +93,6 @@ const PlansModal: React.FC = () => {
 
   return (
     <div>
-      <button
-        onClick={openModal}
-        className="rounded bg-blue-500 px-4 py-2 text-white"
-      >
-        {language === 'ko' ? '모달 열기' : 'Open Modal'}
-      </button>
-
       {isVisible && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="max-w-md rounded-[8px] bg-white p-[32px] shadow-lg">
