@@ -10,9 +10,12 @@ import {
   WeatherResponse,
 } from '@/api'
 import { LoadingAvatar } from '@/components/Avatar/Avatar'
+import { getRecommendData } from '@/components/Date/getRecommendData'
 import Header from '@/components/Header/Header'
 import { ActivityWeather } from '@/components/Info/ActivityWeather'
 import NavigationBar from '@/components/NavigationBar/NavigationBar'
+import PlansModal from '@/components/PlansModal/PlansModal'
+import { useModal } from '@/hooks/useModal/useModal'
 import { useTranslate } from '@/hooks/useTranslate/useTranslate'
 import { useWeatherContext } from '@/providers/WeatherProviter'
 import { RootState } from '@/redux/store'
@@ -20,7 +23,7 @@ import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 const Recommend = () => {
-  const [geolocation, setGeolocation] = useState<coordinate | null>(null)
+  const { isVisible, openModal, closeModal } = useModal()
   const [loading, setLoading] = useState<boolean>(true)
   const language = useSelector((state: RootState) => state.language)
   const activityWeather = useSelector(
@@ -30,53 +33,65 @@ const Recommend = () => {
   const { weatherData } = useWeatherContext()
 
   // POST
-  const { data: activityInfo, mutate: mutateActivityInfo } = useActivityInfo(
-    {
-      location: '서울',
-      time: {
-        start: weatherData?.startTime || '',
-        end: weatherData?.endTime || '',
-      },
-      type: weatherData?.type || ActivityType.Indoor,
-      style: weatherData?.style || ActivityStyle.Amekaji,
-      weather: 800,
-      wind: activityWeather.wind,
-      rain: activityWeather.rain,
-      humidity: activityWeather.humidity,
-      feelsLike: activityWeather.feelsLike,
-      temp: activityWeather.temp,
+  const { data: activityInfo, mutate: mutateActivityInfo } = useActivityInfo({
+    onSuccess: () => {
+      console.log('SUCCESS')
     },
-    {
-      onSuccess: () => {
-        console.log('SUCCESS')
-      },
-      onError: (e) => {
-        console.log(e)
-      },
+    onError: (e) => {
+      console.log(e)
     },
-  )
+  })
 
   const { data: todayWeather } = useTodayWeatherQuery(
-    geolocation as coordinate,
+    weatherData?.location as coordinate,
     {
-      enabled: !!geolocation,
+      enabled: !!weatherData?.location,
       retry: 3,
     },
   )
-
-  // geolocation과 loading 상태에 따라 mutate 호출
+  // todayWeather 데이터로 시간에 따른 날씨 필터링
   useEffect(() => {
-    if (weatherData?.location) {
-      setGeolocation({
-        lat: weatherData.location.lat,
-        lon: weatherData.location.lon,
+    if (todayWeather && weatherData?.location) {
+      const filteredWeather = getRecommendData(todayWeather, {
+        startTime: weatherData.startTime || '',
+        endTime: weatherData.endTime || '',
+      })
+
+      const query = {
+        location: todayWeather.city.name,
+        time: {
+          start: weatherData.startTime || '',
+          end: weatherData.endTime || '',
+        },
+        type: weatherData.type || ActivityType.Indoor,
+        style: weatherData.style || ActivityStyle.Amekaji,
+        weather: filteredWeather.tempCode,
+        wind: filteredWeather.wind,
+        rain: filteredWeather.rain,
+        humidity: filteredWeather.hydrate,
+        feelsLike: filteredWeather.feels_like,
+        temp: filteredWeather.temp,
+      }
+
+      console.log(query)
+
+      mutateActivityInfo({
+        location: todayWeather.city.name,
+        time: {
+          start: weatherData.startTime || '',
+          end: weatherData.endTime || '',
+        },
+        type: weatherData.type || ActivityType.Indoor,
+        style: weatherData.style || ActivityStyle.Amekaji,
+        weather: filteredWeather.tempCode,
+        wind: filteredWeather.wind,
+        rain: filteredWeather.rain,
+        humidity: filteredWeather.hydrate,
+        feelsLike: filteredWeather.feels_like,
+        temp: filteredWeather.temp,
       })
     }
-
-    if (loading) {
-      mutateActivityInfo()
-    }
-  }, [weatherData?.location, loading, mutateActivityInfo])
+  }, [weatherData?.location, todayWeather])
 
   // comment 번역
   useEffect(() => {
@@ -90,13 +105,13 @@ const Recommend = () => {
     if (todayWeather) {
       const timer = setTimeout(() => {
         setLoading(false)
-      }, 2000)
+      }, 3000)
       return () => clearTimeout(timer)
     }
   }, [todayWeather])
 
   return (
-    <div className="flex h-screen min-w-[600px] flex-col gap-9 p-9">
+    <div className="flex min-h-screen min-w-[600px] flex-col gap-9 p-9">
       {!loading ? (
         <>
           <Header />
@@ -117,7 +132,8 @@ const Recommend = () => {
               ? translatedText[0]?.translations[0]?.text
               : activityInfo?.result?.comment}
           </p>
-          <NavigationBar color="zinc" />
+          <NavigationBar color="zinc" openModal={openModal} />
+          <PlansModal isVisible={isVisible} closeModal={closeModal} />
         </>
       ) : (
         <LoadingAvatar />

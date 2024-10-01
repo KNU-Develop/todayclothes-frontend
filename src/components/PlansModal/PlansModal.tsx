@@ -1,7 +1,6 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
-import { useModal } from '@/hooks/useModal/useModal'
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { useForm, Controller } from 'react-hook-form'
@@ -9,6 +8,9 @@ import dayjs, { Dayjs } from 'dayjs'
 import GooglePlacesAutocomplete, {
   geocodeByPlaceId,
 } from 'react-google-places-autocomplete'
+import { useRouter } from 'next/navigation'
+import { useWeatherContext } from '@/providers/WeatherProviter'
+import { ActivityStyle, ActivityType } from '@/api'
 
 interface PlansModalProps {
   isVisible: boolean
@@ -23,20 +25,22 @@ interface Option {
 }
 
 interface FormValues {
-  activityType: 'Indoors' | 'Outdoors' | null
-  activityStyle: string | null
+  activityType: ActivityType.Indoor | ActivityType.Outdoor | null
+  activityStyle: ActivityStyle | null
   startTime: Dayjs | null
   endTime: Dayjs | null
   selectedPlace: Option | null
   placeCoordinates: {
     lat: number | null
-    lng: number | null
+    lon: number | null
   }
 }
 
 const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
   // Redux에서 언어 상태 가져오기
   const language = useSelector((state: RootState) => state.language)
+  const router = useRouter()
+  const weatherData = useWeatherContext()
 
   const { control, handleSubmit, setValue, getValues, reset } =
     useForm<FormValues>({
@@ -46,19 +50,19 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
         startTime: null,
         endTime: null,
         selectedPlace: null,
-        placeCoordinates: { lat: null, lng: null },
+        placeCoordinates: { lat: null, lon: null },
       },
     })
 
   const activityStyles =
     language === 'ko'
       ? [
-          '비즈니스 캐주얼',
-          '미니멀',
-          '캐주얼',
-          '스트리트',
-          '스포츠',
-          '아메카지',
+          ActivityStyle.BusinessCasual,
+          ActivityStyle.Minimal,
+          ActivityStyle.Casual,
+          ActivityStyle.Street,
+          ActivityStyle.Sports,
+          ActivityStyle.Amekaji,
         ]
       : ['Business Casual', 'Minimal', 'Casual', 'Street', 'Sports', 'Amekaji']
 
@@ -68,12 +72,11 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
     const placeId = newValue?.value?.place_id
     if (placeId) {
       const results = await geocodeByPlaceId(placeId)
-      console.log('Geocode results:', results)
 
       if (results[0]?.geometry?.location) {
         setValue('placeCoordinates', {
           lat: results[0].geometry.location.lat(),
-          lng: results[0].geometry.location.lng(),
+          lon: results[0].geometry.location.lng(),
         })
       }
     } else {
@@ -82,7 +85,17 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
   }
 
   const handleLog = (data: FormValues) => {
-    console.log('Form Data:', data)
+    weatherData.setWeatherData({
+      location: {
+        lat: data.placeCoordinates.lat || 0,
+        lon: data.placeCoordinates.lon || 0,
+      },
+      startTime: data.startTime?.format('YYYY-MM-DDTHH:mm') || '',
+      endTime: data.endTime?.format('YYYY-MM-DDTHH:mm') || '',
+      type: data.activityType,
+      style: data.activityStyle,
+    })
+    router.push('/recommend')
     reset()
     closeModal()
   }
@@ -94,9 +107,9 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
   return (
     <div>
       {isVisible && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 font-notosanko">
           <div className="max-w-md rounded-[8px] bg-white p-[32px] shadow-lg">
-            <h2 className="mb-[36px] text-center font-notosanko text-[20px]">
+            <h2 className="mb-[36px] w-[346px] text-center font-notosanko text-[20px]">
               {language === 'ko'
                 ? '오늘의 주요 일정을 입력해주세요.'
                 : 'What are your main plans for today?'}
@@ -174,9 +187,9 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                     <div className="flex space-x-2">
                       <button
                         type="button"
-                        onClick={() => field.onChange('Indoors')}
+                        onClick={() => field.onChange(ActivityType.Indoor)}
                         className={`flex-1 rounded-[16px] px-4 py-2 ${
-                          field.value === 'Indoors'
+                          field.value === ActivityType.Indoor
                             ? 'bg-red-100 text-red-600'
                             : 'bg-gray-100 text-gray-600'
                         }`}
@@ -185,9 +198,9 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                       </button>
                       <button
                         type="button"
-                        onClick={() => field.onChange('Outdoors')}
+                        onClick={() => field.onChange(ActivityType.Outdoor)}
                         className={`flex-1 rounded-[16px] px-4 py-2 ${
-                          field.value === 'Outdoors'
+                          field.value === ActivityType.Outdoor
                             ? 'bg-red-100 text-red-600'
                             : 'bg-gray-100 text-gray-600'
                         }`}

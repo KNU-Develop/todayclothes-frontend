@@ -24,7 +24,9 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ color, openModal }) => {
     // User 클릭 시 동작
   }
 
-  const handleRotateClick = () => {}
+  const handleRotateClick = () => {
+    openModal()
+  }
 
   return (
     <div
