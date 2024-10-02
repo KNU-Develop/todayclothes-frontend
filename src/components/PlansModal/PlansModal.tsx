@@ -1,7 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
-import { useModal } from '@/hooks/useModal/useModal'
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { useForm, Controller } from 'react-hook-form'
@@ -9,6 +8,8 @@ import dayjs, { Dayjs } from 'dayjs'
 import GooglePlacesAutocomplete, {
   geocodeByPlaceId,
 } from 'react-google-places-autocomplete'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 interface PlansModalProps {
   isVisible: boolean
@@ -35,7 +36,6 @@ interface FormValues {
 }
 
 const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
-  // Redux에서 언어 상태 가져오기
   const language = useSelector((state: RootState) => state.language)
 
   const { control, handleSubmit, setValue, getValues, reset } =
@@ -68,8 +68,6 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
     const placeId = newValue?.value?.place_id
     if (placeId) {
       const results = await geocodeByPlaceId(placeId)
-      console.log('Geocode results:', results)
-
       if (results[0]?.geometry?.location) {
         setValue('placeCoordinates', {
           lat: results[0].geometry.location.lat(),
@@ -82,10 +80,31 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
   }
 
   const handleLog = (data: FormValues) => {
+    const { activityType, activityStyle, startTime, endTime, selectedPlace } =
+      data
+
+    // Check if any required fields are missing
+    if (
+      !activityType ||
+      !activityStyle ||
+      !startTime ||
+      !endTime ||
+      !selectedPlace
+    ) {
+      toast.error(
+        language === 'ko'
+          ? '필수 값이 입력되지 않았습니다.'
+          : 'Required fields are missing.',
+      )
+      return
+    }
+
+    // If all fields are filled, proceed with form submission
     console.log('Form Data:', data)
     reset()
     closeModal()
   }
+
   const handleClose = () => {
     reset()
     closeModal()
@@ -117,6 +136,22 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                         label={language === 'ko' ? '시작 시간' : 'Start Time'}
                         {...field}
                         value={field.value || null}
+                        sx={{
+                          backgroundColor: 'rgb(241, 241, 244)',
+                          border: 'none',
+                          borderRadius: '16px',
+                          '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              border: 'none',
+                            },
+                            '&:hover fieldset': {
+                              border: 'none',
+                            },
+                            '&.Mui-focused fieldset': {
+                              border: 'none',
+                            },
+                          },
+                        }}
                       />
                     </LocalizationProvider>
                   )}
@@ -130,6 +165,22 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                         label={language === 'ko' ? '종료 시간' : 'End Time'}
                         {...field}
                         value={field.value || null}
+                        sx={{
+                          backgroundColor: 'rgb(241, 241, 244)',
+                          border: 'none',
+                          borderRadius: '16px',
+                          '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              border: 'none',
+                            },
+                            '&:hover fieldset': {
+                              border: 'none',
+                            },
+                            '&.Mui-focused fieldset': {
+                              border: 'none',
+                            },
+                          },
+                        }}
                       />
                     </LocalizationProvider>
                   )}
@@ -154,6 +205,19 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                             language === 'ko'
                               ? '활동 장소를 입력하세요.'
                               : 'Enter activity location.',
+                          styles: {
+                            control: (provided) => ({
+                              ...provided,
+                              backgroundColor: 'rgb(241 241 244)',
+                              border: '0px solid',
+                              borderRadius: '16px',
+                              color: '#3C4350',
+                            }),
+                            input: (provided) => ({
+                              ...provided,
+                              color: '#3C4350',
+                            }),
+                          },
                         }}
                         apiKey={process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY}
                       />
@@ -232,7 +296,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
               <div className="mt-6 flex space-x-4">
                 <button
                   type="button"
-                  onClick={handleClose} // Use handleClose for cancel button
+                  onClick={handleClose}
                   className="flex-1 rounded-[6px] bg-red-100 py-2 text-red-600"
                 >
                   {language === 'ko' ? '취소' : 'Cancel'}
@@ -245,6 +309,9 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                 </button>
               </div>
             </form>
+
+            {/* Toast container for notifications */}
+            <ToastContainer />
           </div>
         </div>
       )}
