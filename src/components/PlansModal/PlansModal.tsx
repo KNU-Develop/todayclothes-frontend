@@ -114,8 +114,8 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
     <div>
       {isVisible && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="max-w-md rounded-[8px] bg-white p-[32px] shadow-lg">
-            <h2 className="mb-[36px] text-center font-notosanko text-[20px]">
+          <div className="w-[25rem] rounded-[8px] bg-white p-[32px] shadow-lg">
+            <h2 className="mb-[36px] text-center text-[20px] font-semibold leading-normal tracking-[-0.1px]">
               {language === 'ko'
                 ? '오늘의 주요 일정을 입력해주세요.'
                 : 'What are your main plans for today?'}
@@ -123,7 +123,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
 
             <form className="space-y-4" onSubmit={handleSubmit(handleLog)}>
               {/* Activity Time */}
-              <div className="flex flex-col gap-[10px]">
+              <div className="flex flex-col gap-[4px]">
                 <label className="font-notosanko text-[12px] font-medium leading-normal text-zinc-400">
                   {language === 'ko' ? '활동 시간' : 'Activity Time'}
                 </label>
@@ -192,7 +192,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                 <label className="font-notosanko text-[12px] font-medium leading-normal text-zinc-400">
                   {language === 'ko' ? '활동 장소' : 'Activity Location'}
                 </label>
-                <div className="max-w-[274px]">
+                <div className="max-w-full">
                   <Controller
                     name="selectedPlace"
                     control={control}
@@ -208,9 +208,10 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                           styles: {
                             control: (provided) => ({
                               ...provided,
+                              height: '3rem',
                               backgroundColor: 'rgb(241 241 244)',
                               border: '0px solid',
-                              borderRadius: '16px',
+                              borderRadius: '8px',
                               color: '#3C4350',
                             }),
                             input: (provided) => ({
@@ -239,7 +240,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                       <button
                         type="button"
                         onClick={() => field.onChange('Indoors')}
-                        className={`flex-1 rounded-[16px] px-4 py-2 ${
+                        className={`h-[3rem] flex-1 rounded-[8px] px-4 py-2 ${
                           field.value === 'Indoors'
                             ? 'bg-red-100 text-red-600'
                             : 'bg-gray-100 text-gray-600'
@@ -250,7 +251,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                       <button
                         type="button"
                         onClick={() => field.onChange('Outdoors')}
-                        className={`flex-1 rounded-[16px] px-4 py-2 ${
+                        className={`h-[3rem] flex-1 rounded-[8px] px-4 py-2 ${
                           field.value === 'Outdoors'
                             ? 'bg-red-100 text-red-600'
                             : 'bg-gray-100 text-gray-600'
@@ -278,7 +279,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                           key={style}
                           type="button"
                           onClick={() => field.onChange(style)}
-                          className={`rounded-[16px] px-4 py-2 ${
+                          className={`h-[3rem] rounded-[8px] px-4 py-2 ${
                             field.value === style
                               ? 'bg-red-100 text-red-600'
                               : 'bg-gray-100 text-gray-600'
@@ -293,17 +294,17 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
               </div>
 
               {/* Buttons */}
-              <div className="mt-6 flex space-x-4">
+              <div className="mt-6 flex space-x-2">
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="flex-1 rounded-[6px] bg-red-100 py-2 text-red-600"
+                  className="flex-1 rounded-[8px] bg-red-100 py-2 text-red-600"
                 >
                   {language === 'ko' ? '취소' : 'Cancel'}
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 rounded-[6px] bg-red-500 py-2 font-notosanko text-white"
+                  className="flex-1 rounded-[8px] bg-red-500 py-2 font-notosanko text-white"
                 >
                   {language === 'ko' ? '생성' : 'Generate'}
                 </button>
