@@ -9,11 +9,11 @@ type WeatherData = {
   location: {
     lat: number
     lon: number
-  }
+  } | null
   startTime?: string
   endTime?: string
-  type: ActivityType
-  style: ActivityStyle
+  type: ActivityType | null
+  style: ActivityStyle | null
 }
 
 // WeatherContext와 Provider 생성

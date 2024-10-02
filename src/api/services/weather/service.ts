@@ -10,7 +10,7 @@ export const WeatherService = {
     client: QueryClient,
     coordinate: coordinate,
   ): Promise<WeatherResponse> {
-    const url = `https://pro.openweathermap.org/data/2.5/forecast/hourly?lat=${coordinate.lat}&lon=${coordinate.lon}&appid=${WEATHER_API_KEY}&units=metric&cnt=24`
+    const url = `https://pro.openweathermap.org/data/2.5/forecast/hourly?lat=${coordinate.lat}&lon=${coordinate.lon}&appid=${WEATHER_API_KEY}&units=metric&cnt=48`
 
     try {
       const response = await axios.get<WeatherResponse>(url)
