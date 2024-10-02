@@ -12,7 +12,7 @@ export const getWeatherDescription = (
     { range: [500, 504], ko: '비', en: 'Rain', emoji: '🌧️' },
     { range: [511, 511], ko: '얼어붙은 비', en: 'Freezing Rain', emoji: '🌧️' },
     { range: [520, 531], ko: '소나기', en: 'Shower Rain', emoji: '🌦️' },
-    { range: [600, 622], ko: '눈', en: 'Snow', emoji: '❄️' },
+    { range: [600, 622], ko: '눈', en: 'Snow', emoji: '☃️' },
     { range: [701, 781], ko: '안개', en: 'Fog', emoji: '🌫️' },
     { range: [800, 800], ko: '맑음', en: 'Clear', emoji: '☀️' },
     { range: [801, 803], ko: '구름 많음', en: 'Cloudy', emoji: '🌥️' },
