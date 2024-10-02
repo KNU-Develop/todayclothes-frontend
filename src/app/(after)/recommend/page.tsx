@@ -1,4 +1,3 @@
-// Recommend.tsx
 'use client'
 
 import {
@@ -9,6 +8,7 @@ import {
   useTodayWeatherQuery,
   WeatherResponse,
 } from '@/api'
+import { ActivityWeatherInfo } from '@/api/services/recommend/model'
 import { LoadingAvatar } from '@/components/Avatar/Avatar'
 import { getRecommendData } from '@/components/Date/getRecommendData'
 import Header from '@/components/Header/Header'
@@ -26,11 +26,9 @@ const Recommend = () => {
   const { isVisible, openModal, closeModal } = useModal()
   const [loading, setLoading] = useState<boolean>(true)
   const language = useSelector((state: RootState) => state.language)
-  const activityWeather = useSelector(
-    (state: RootState) => state.activityWeather,
-  )
   const { translate, translatedText } = useTranslate()
   const { weatherData } = useWeatherContext()
+  const [query, setQuery] = useState<ActivityWeatherInfo>()
 
   // POST
   const { data: activityInfo, mutate: mutateActivityInfo } = useActivityInfo({
@@ -57,7 +55,7 @@ const Recommend = () => {
         endTime: weatherData.endTime || '',
       })
 
-      const query = {
+      setQuery({
         location: todayWeather.city.name,
         time: {
           start: weatherData.startTime || '',
@@ -71,9 +69,7 @@ const Recommend = () => {
         humidity: filteredWeather.hydrate,
         feelsLike: filteredWeather.feels_like,
         temp: filteredWeather.temp,
-      }
-
-      console.log(query)
+      })
 
       mutateActivityInfo({
         location: todayWeather.city.name,
@@ -116,9 +112,7 @@ const Recommend = () => {
         <>
           <Header />
           <ActivityWeather
-            todayWeather={todayWeather as WeatherResponse}
-            startTime={weatherData?.startTime as string}
-            endTime={weatherData?.endTime as string}
+            todayWeather={query as ActivityWeatherInfo}
             type={weatherData?.type as ActivityType}
             style={weatherData?.style as ActivityStyle}
           />
