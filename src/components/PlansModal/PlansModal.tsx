@@ -83,6 +83,8 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
     const { activityType, activityStyle, startTime, endTime, selectedPlace } =
       data
 
+    const now = dayjs()
+
     // Check if any required fields are missing
     if (
       !activityType ||
@@ -99,7 +101,27 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
       return
     }
 
-    // If all fields are filled, proceed with form submission
+    // Check if startTime is before the current time
+    if (startTime.isBefore(now)) {
+      toast.error(
+        language === 'ko'
+          ? '시작 시간은 현재 시간보다 이후여야 합니다.'
+          : 'Start time must be later than the current time.',
+      )
+      return
+    }
+
+    // Check if endTime is before the current time
+    if (endTime.isBefore(now)) {
+      toast.error(
+        language === 'ko'
+          ? '종료 시간은 현재 시간보다 이후여야 합니다.'
+          : 'End time must be later than the current time.',
+      )
+      return
+    }
+
+    // If all fields are filled and times are valid, proceed with form submission
     console.log('Form Data:', data)
     reset()
     closeModal()
