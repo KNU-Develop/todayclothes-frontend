@@ -79,7 +79,9 @@ const HomePage = () => {
           <TodayWeatherInfo todayWeather={todayWeather as WeatherResponse} />
           <HomeAvatar />
           <NavigationBar color={background} openModal={openModal} />
-          <PlansModal isVisible={isVisible} closeModal={closeModal} />
+          {isVisible && (
+            <PlansModal isVisible={isVisible} closeModal={closeModal} />
+          )}
         </div>
       ) : (
         <div>

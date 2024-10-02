@@ -117,10 +117,10 @@ const Recommend = () => {
           <Header />
           <ActivityWeather
             todayWeather={todayWeather as WeatherResponse}
-            startTime={weatherData?.startTime || '2024-09-27T12:00Z'}
-            endTime={weatherData?.endTime || '2024-09-27T18:00Z'}
-            type={activityInfo?.result.type || ActivityType.Indoor}
-            style={activityInfo?.result.style || ActivityStyle.BusinessCasual}
+            startTime={weatherData?.startTime as string}
+            endTime={weatherData?.endTime as string}
+            type={weatherData?.type as ActivityType}
+            style={weatherData?.style as ActivityStyle}
           />
           <img
             src={activityInfo?.result?.imgPath}
@@ -133,7 +133,9 @@ const Recommend = () => {
               : activityInfo?.result?.comment}
           </p>
           <NavigationBar color="zinc" openModal={openModal} />
-          <PlansModal isVisible={isVisible} closeModal={closeModal} />
+          {isVisible && (
+            <PlansModal isVisible={isVisible} closeModal={closeModal} />
+          )}
         </>
       ) : (
         <LoadingAvatar />
