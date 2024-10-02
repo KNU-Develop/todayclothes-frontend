@@ -16,8 +16,9 @@ import {
 } from './model'
 
 export const activityOptions = {
-  activityWeatherInfo: (client: QueryClient, dto: ActivityWeatherInfo) => ({
-    mutationFn: () => ActivityService.activityInfo(client, dto),
+  activityWeatherInfo: (client: QueryClient) => ({
+    mutationFn: (dto: ActivityWeatherInfo) =>
+      ActivityService.activityInfo(client, dto),
   }),
   activityWeatherHistory: (client: QueryClient) => ({
     queryKey: ['activityHistory'],
@@ -30,13 +31,16 @@ export const activityOptions = {
 }
 
 export const useActivityInfo = (
-  dto: ActivityWeatherInfo,
-  options: MutationOptions<ActivityWeatherResponse> = {},
+  options: MutationOptions<
+    ActivityWeatherResponse,
+    Error,
+    ActivityWeatherInfo
+  > = {},
 ) => {
   const queryClient = useQueryClient()
 
-  return useMutation<ActivityWeatherResponse>({
-    ...activityOptions.activityWeatherInfo(queryClient, dto),
+  return useMutation<ActivityWeatherResponse, Error, ActivityWeatherInfo>({
+    ...activityOptions.activityWeatherInfo(queryClient),
     ...options,
   })
 }

@@ -60,17 +60,17 @@ export const TodayWeatherInfo: React.FC<{ todayWeather: WeatherResponse }> = ({
     <div className="flex h-[97px] w-full content-center items-start self-stretch">
       {
         <div className="flex w-full flex-row justify-between">
-          <div className="flex-1 flex-col gap-[8px]">
+          <div className="flex flex-col gap-[8px]">
             <h1 className="font-notosanko text-weatherTitle">
               {language == 'ko' && translatedText
                 ? translatedText[0]?.translations[0]?.text
                 : todayWeather?.city.name}
             </h1>
-            <span className="font-notosanko text-weatherSub text-weatherSubColor">
+            <p className="font-notosanko text-weatherSub text-weatherSubColor">
               {formatDate(language)}
-            </span>
+            </p>
           </div>
-          <div className="flex flex-col content-center items-end">
+          <div className="flex flex-col content-center items-end gap-[8px]">
             <h1 className="font-notosanko text-weatherTem">
               {language == 'en' ? 'Low: ' : '최저: '} {Math.round(tempMin)}°C /{' '}
               {language == 'en' ? 'High:' : '최고: '}

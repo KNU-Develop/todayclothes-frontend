@@ -35,20 +35,8 @@ const HomePage = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           setGeolocation({
-            // lat: position.coords.latitude,
-            // lon: position.coords.longitude,
-
-            // 베이징 좌표
-            lat: 39.9035,
-            lon: 116.388,
-
-            // 워싱턴 좌표
-            // lat: 38.895,
-            // lon: -77.015,
-
-            // 알래스카
-            // lat: 58,
-            // lon: 134,
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
           })
         },
         (error) => {
@@ -77,7 +65,6 @@ const HomePage = () => {
         <LocationRequired />
         <HomeAvatar />
         <NavigationBar color="so_hot" openModal={openModal} />
-        <PlansModal isVisible={isVisible} closeModal={closeModal} />
       </div>
     )
   }
@@ -92,6 +79,9 @@ const HomePage = () => {
           <TodayWeatherInfo todayWeather={todayWeather as WeatherResponse} />
           <HomeAvatar />
           <NavigationBar color={background} openModal={openModal} />
+          {isVisible && (
+            <PlansModal isVisible={isVisible} closeModal={closeModal} />
+          )}
         </div>
       ) : (
         <div>
