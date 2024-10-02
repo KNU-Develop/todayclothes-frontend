@@ -91,7 +91,6 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
 
     const now = dayjs()
 
-    // Check if any required fields are missing
     if (
       !activityType ||
       !activityStyle ||
@@ -107,7 +106,6 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
       return
     }
 
-    // Check if startTime is before the current time
     if (startTime.isBefore(now)) {
       toast.error(
         language === 'ko'
@@ -117,7 +115,6 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
       return
     }
 
-    // Check if endTime is before the current time
     if (endTime.isBefore(now)) {
       toast.error(
         language === 'ko'
@@ -127,7 +124,6 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
       return
     }
 
-    // If all fields are filled and times are valid, proceed with form submission
     console.log('Form Data:', data)
     weatherData.setWeatherData({
       location: {
