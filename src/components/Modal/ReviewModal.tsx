@@ -144,7 +144,6 @@ const ReviewModal = ({
 
   return (
     <>
-      {/* <button onClick={openModal}>모달열기</button> */}
       {isVisible && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
           <div className="flex w-[410px] rounded-[8px] bg-white p-8 shadow-lg">
