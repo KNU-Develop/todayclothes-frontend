@@ -5,5 +5,5 @@ export type { coordinate, WeatherResponse } from './services/weather/model'
 export { useTodayWeatherQuery } from './services/weather/quries'
 
 //Recommend
-export { ActivityType, ActivityStyle } from './services/recommend/model'
+export { ActivityType, ActivityStyle, Feedback } from './services/recommend/model'
 export { useActivityInfo } from './services/recommend/quries'
