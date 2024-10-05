@@ -12,6 +12,12 @@ export enum ActivityStyle {
   Amekaji = '아메카지',
 }
 
+export enum Feedback {
+  Perfect = '완벽함',
+  Too_Hot = '너무 더움',
+  Too_Cold = '너무 추움',
+}
+
 export interface ActivityTime {
   start: string
   end: string
@@ -69,12 +75,12 @@ export interface ActivityWeatherResponse {
 }
 
 export interface WeatherReview {
-  feedback: string
+  feedback: Feedback
 }
 
 export interface ActivityReview {
   clothesId: string
-  feedback: string
+  feedback: Feedback
   imageFile?: File
 }
 

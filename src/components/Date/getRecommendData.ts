@@ -11,8 +11,8 @@ export function getRecommendData(
 ) {
   const { startTime, endTime } = weatherData
 
-  const start = dayjs(startTime).add(1, 'day')
-  const end = dayjs(endTime).add(1, 'day')
+  const start = dayjs(startTime)
+  const end = dayjs(endTime)
 
   // 필터된 날씨 데이터 추출
   const filteredWeather = todayWeather.list.filter((entry: any) => {
