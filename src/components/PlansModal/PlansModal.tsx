@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm, Controller, useWatch } from 'react-hook-form'
 import dayjs, { Dayjs } from 'dayjs'
 import GooglePlacesAutocomplete, {
   geocodeByPlaceId,
@@ -43,7 +43,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
   const router = useRouter()
   const weatherData = useWeatherContext()
 
-  const { control, handleSubmit, setValue, getValues, reset } =
+  const { control, handleSubmit, setValue, getValues, reset, watch } =
     useForm<FormValues>({
       defaultValues: {
         activityType: null,
@@ -66,6 +66,16 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
           ActivityStyle.Amekaji,
         ]
       : ['Business Casual', 'Minimal', 'Casual', 'Street', 'Sports', 'Amekaji']
+
+  const watchedValues = watch([
+    'activityType',
+    'activityStyle',
+    'startTime',
+    'endTime',
+    'selectedPlace',
+  ])
+
+  const isFormValid = watchedValues.every((value) => value !== null)
 
   const handlePlaceChange = async (newValue: Option | null) => {
     setValue('selectedPlace', newValue)
@@ -91,22 +101,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
 
     const now = dayjs()
 
-    if (
-      !activityType ||
-      !activityStyle ||
-      !startTime ||
-      !endTime ||
-      !selectedPlace
-    ) {
-      toast.error(
-        language === 'ko'
-          ? '필수 값이 입력되지 않았습니다.'
-          : 'Required fields are missing.',
-      )
-      return
-    }
-
-    if (startTime.isBefore(now)) {
+    if (!startTime || startTime.isBefore(now)) {
       toast.error(
         language === 'ko'
           ? '시작 시간은 현재 시간보다 이후여야 합니다.'
@@ -115,7 +110,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
       return
     }
 
-    if (endTime.isBefore(now)) {
+    if (!endTime || endTime.isBefore(now)) {
       toast.error(
         language === 'ko'
           ? '종료 시간은 현재 시간보다 이후여야 합니다.'
@@ -149,7 +144,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
     <div>
       {isVisible && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="w-[25rem] rounded-[8px] bg-white p-[32px] shadow-lg">
+          <div className="w-[25rem] rounded-[16px] bg-white p-[32px] shadow-lg">
             <h2 className="mb-[36px] text-center font-notosanko text-[20px] font-semibold leading-normal tracking-[-0.1px]">
               {language === 'ko'
                 ? '오늘의 주요 일정을 입력해주세요.'
@@ -248,7 +243,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                               height: '3rem',
                               backgroundColor: 'rgb(241 241 244)',
                               border: '0px solid',
-                              borderRadius: '8px',
+                              borderRadius: '16px',
                               color: '#3C4350',
                             }),
                             input: (provided) => ({
@@ -341,7 +336,10 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 rounded-[16px] bg-red-500 py-2 font-notosanko text-white"
+                  className={`flex-1 rounded-[16px] py-2 font-notosanko text-white ${
+                    !isFormValid ? 'bg-gray-300' : 'bg-red-500'
+                  }`}
+                  disabled={!isFormValid}
                 >
                   {language === 'ko' ? '생성' : 'Generate'}
                 </button>
