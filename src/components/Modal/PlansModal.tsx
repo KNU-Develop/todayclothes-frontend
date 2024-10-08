@@ -3,11 +3,13 @@ import { useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
 import { LocalizationProvider, TimePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm, Controller, useWatch } from 'react-hook-form'
 import dayjs, { Dayjs } from 'dayjs'
 import GooglePlacesAutocomplete, {
   geocodeByPlaceId,
 } from 'react-google-places-autocomplete'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
 import { useWeatherContext } from '@/providers/WeatherProviter'
 import { ActivityStyle, ActivityType } from '@/api'
@@ -37,12 +39,11 @@ interface FormValues {
 }
 
 const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
-  // Redux에서 언어 상태 가져오기
   const language = useSelector((state: RootState) => state.language)
   const router = useRouter()
   const weatherData = useWeatherContext()
 
-  const { control, handleSubmit, setValue, getValues, reset } =
+  const { control, handleSubmit, setValue, getValues, reset, watch } =
     useForm<FormValues>({
       defaultValues: {
         activityType: null,
@@ -66,6 +67,16 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
         ]
       : ['Business Casual', 'Minimal', 'Casual', 'Street', 'Sports', 'Amekaji']
 
+  const watchedValues = watch([
+    'activityType',
+    'activityStyle',
+    'startTime',
+    'endTime',
+    'selectedPlace',
+  ])
+
+  const isFormValid = watchedValues.every((value) => value !== null)
+
   const handlePlaceChange = async (newValue: Option | null) => {
     setValue('selectedPlace', newValue)
 
@@ -85,6 +96,30 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
   }
 
   const handleLog = (data: FormValues) => {
+    const { activityType, activityStyle, startTime, endTime, selectedPlace } =
+      data
+
+    const now = dayjs()
+
+    if (!startTime || startTime.isBefore(now)) {
+      toast.error(
+        language === 'ko'
+          ? '시작 시간은 현재 시간보다 이후여야 합니다.'
+          : 'Start time must be later than the current time.',
+      )
+      return
+    }
+
+    if (!endTime || endTime.isBefore(now)) {
+      toast.error(
+        language === 'ko'
+          ? '종료 시간은 현재 시간보다 이후여야 합니다.'
+          : 'End time must be later than the current time.',
+      )
+      return
+    }
+
+    console.log('Form Data:', data)
     weatherData.setWeatherData({
       location: {
         lat: data.placeCoordinates.lat || 0,
@@ -99,6 +134,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
     reset()
     closeModal()
   }
+
   const handleClose = () => {
     reset()
     closeModal()
@@ -107,9 +143,9 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
   return (
     <div>
       {isVisible && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 font-notosanko">
-          <div className="max-w-md rounded-[8px] bg-white p-[32px] shadow-lg">
-            <h2 className="mb-[36px] w-[346px] text-center font-notosanko text-[20px]">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="w-[25rem] rounded-[16px] bg-white p-[32px] shadow-lg">
+            <h2 className="mb-[36px] text-center font-notosanko text-[20px] font-semibold leading-normal tracking-[-0.1px]">
               {language === 'ko'
                 ? '오늘의 주요 일정을 입력해주세요.'
                 : 'What are your main plans for today?'}
@@ -117,7 +153,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
 
             <form className="space-y-4" onSubmit={handleSubmit(handleLog)}>
               {/* Activity Time */}
-              <div className="flex flex-col gap-[10px]">
+              <div className="flex flex-col gap-[8px]">
                 <label className="font-notosanko text-[12px] font-medium leading-normal text-zinc-400">
                   {language === 'ko' ? '활동 시간' : 'Activity Time'}
                 </label>
@@ -130,6 +166,23 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                         label={language === 'ko' ? '시작 시간' : 'Start Time'}
                         {...field}
                         value={field.value || null}
+                        sx={{
+                          backgroundColor: 'rgb(241, 241, 244)',
+                          border: 'none',
+                          borderRadius: '16px',
+                          fontFamily: 'font-notosanko',
+                          '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              border: 'none',
+                            },
+                            '&:hover fieldset': {
+                              border: 'none',
+                            },
+                            '&.Mui-focused fieldset': {
+                              border: 'none',
+                            },
+                          },
+                        }}
                       />
                     </LocalizationProvider>
                   )}
@@ -143,6 +196,23 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                         label={language === 'ko' ? '종료 시간' : 'End Time'}
                         {...field}
                         value={field.value || null}
+                        sx={{
+                          backgroundColor: 'rgb(241, 241, 244)',
+                          border: 'none',
+                          borderRadius: '16px',
+                          fontFamily: 'font-notosanko',
+                          '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              border: 'none',
+                            },
+                            '&:hover fieldset': {
+                              border: 'none',
+                            },
+                            '&.Mui-focused fieldset': {
+                              border: 'none',
+                            },
+                          },
+                        }}
                       />
                     </LocalizationProvider>
                   )}
@@ -154,7 +224,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                 <label className="font-notosanko text-[12px] font-medium leading-normal text-zinc-400">
                   {language === 'ko' ? '활동 장소' : 'Activity Location'}
                 </label>
-                <div className="max-w-[274px]">
+                <div className="max-w-full">
                   <Controller
                     name="selectedPlace"
                     control={control}
@@ -167,6 +237,20 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                             language === 'ko'
                               ? '활동 장소를 입력하세요.'
                               : 'Enter activity location.',
+                          styles: {
+                            control: (provided) => ({
+                              ...provided,
+                              height: '3rem',
+                              backgroundColor: 'rgb(241 241 244)',
+                              border: '0px solid',
+                              borderRadius: '16px',
+                              color: '#3C4350',
+                            }),
+                            input: (provided) => ({
+                              ...provided,
+                              color: '#3C4350',
+                            }),
+                          },
                         }}
                         apiKey={process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY}
                       />
@@ -188,7 +272,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                       <button
                         type="button"
                         onClick={() => field.onChange(ActivityType.Indoor)}
-                        className={`flex-1 rounded-[16px] px-4 py-2 ${
+                        className={`flex-1 rounded-[16px] px-2 py-4 font-notosanko font-semibold ${
                           field.value === ActivityType.Indoor
                             ? 'bg-red-100 text-red-600'
                             : 'bg-gray-100 text-gray-600'
@@ -199,7 +283,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                       <button
                         type="button"
                         onClick={() => field.onChange(ActivityType.Outdoor)}
-                        className={`flex-1 rounded-[16px] px-4 py-2 ${
+                        className={`flex-1 rounded-[16px] px-2 py-4 font-notosanko font-semibold ${
                           field.value === ActivityType.Outdoor
                             ? 'bg-red-100 text-red-600'
                             : 'bg-gray-100 text-gray-600'
@@ -227,7 +311,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                           key={style}
                           type="button"
                           onClick={() => field.onChange(style)}
-                          className={`rounded-[16px] px-4 py-2 ${
+                          className={`rounded-[16px] px-2 py-4 font-notosanko font-semibold ${
                             field.value === style
                               ? 'bg-red-100 text-red-600'
                               : 'bg-gray-100 text-gray-600'
@@ -242,22 +326,28 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
               </div>
 
               {/* Buttons */}
-              <div className="mt-6 flex space-x-4">
+              <div className="mt-6 flex space-x-2">
                 <button
                   type="button"
-                  onClick={handleClose} // Use handleClose for cancel button
-                  className="flex-1 rounded-[6px] bg-red-100 py-2 text-red-600"
+                  onClick={handleClose}
+                  className="flex-1 rounded-[16px] bg-red-100 py-2 text-red-600"
                 >
                   {language === 'ko' ? '취소' : 'Cancel'}
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 rounded-[6px] bg-red-500 py-2 font-notosanko text-white"
+                  className={`flex-1 rounded-[16px] py-2 font-notosanko text-white ${
+                    !isFormValid ? 'bg-gray-300' : 'bg-red-500'
+                  }`}
+                  disabled={!isFormValid}
                 >
                   {language === 'ko' ? '생성' : 'Generate'}
                 </button>
               </div>
             </form>
+
+            {/* Toast container for notifications */}
+            <ToastContainer />
           </div>
         </div>
       )}
