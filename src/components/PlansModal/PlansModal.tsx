@@ -153,7 +153,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
 
             <form className="space-y-4" onSubmit={handleSubmit(handleLog)}>
               {/* Activity Time */}
-              <div className="flex flex-col gap-[8px]">
+              <div className="flex flex-col gap-[12px]">
                 <label className="font-notosanko text-[12px] font-medium leading-normal text-zinc-400">
                   {language === 'ko' ? '활동 시간' : 'Activity Time'}
                 </label>
@@ -305,7 +305,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                   name="activityStyle"
                   control={control}
                   render={({ field }) => (
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="mb-[36px] grid grid-cols-2 gap-2">
                       {activityStyles.map((style) => (
                         <button
                           key={style}
@@ -326,7 +326,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
               </div>
 
               {/* Buttons */}
-              <div className="mt-6 flex space-x-2">
+              <div className="flex space-x-2">
                 <button
                   type="button"
                   onClick={handleClose}
