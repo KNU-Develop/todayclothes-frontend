@@ -13,7 +13,7 @@ export const ActivityService = {
   async activityInfo(client: QueryClient, dto: ActivityWeatherInfo) {
     return (
       APIBuilder.post(`/clothes`)
-        // .withCredentials(client)
+        .withCredentials(client)
         .build()
         .call<ActivityWeatherResponse>({ body: JSON.stringify(dto) })
     )
@@ -21,7 +21,7 @@ export const ActivityService = {
   async activityHistory(client: QueryClient) {
     return (
       APIBuilder.get(`/clothes`)
-        // .withCredentials(client)
+        .withCredentials(client)
         .build()
         .call<activityHistoryResponse>()
     )
@@ -29,7 +29,7 @@ export const ActivityService = {
   async activityReview(client: QueryClient, dto: ActivityReview) {
     return (
       APIBuilder.post(`/clothes/review`)
-        // .withCredentials(client)
+        .withCredentials(client)
         .build()
         .call<ActivityReviewResponse>({ body: JSON.stringify(dto) })
     )
