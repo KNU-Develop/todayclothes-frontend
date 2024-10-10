@@ -6,7 +6,8 @@ import { useSelector } from 'react-redux'
 import { useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useActivityReview } from '@/api/services/recommend/quries'
-import { ActivityReview } from '@/api/services/recommend/model'
+import { ActivityReview, Feedback } from '@/api/services/recommend/model'
+import { feedbackMapping } from '../Mapping/mapping'
 
 const ReviewModal = ({
   clothesId,
@@ -21,7 +22,7 @@ const ReviewModal = ({
   const activityReview = useActivityReview()
 
   const { handleSubmit, setValue, watch, reset } = useForm<{
-    selectedFeel: string | null
+    selectedFeel: Feedback | null
     selectedFile: File | null
   }>({
     defaultValues: {
@@ -114,14 +115,14 @@ const ReviewModal = ({
   }
 
   const onSubmit = (data: {
-    selectedFeel: string | null
+    selectedFeel: Feedback | null
     selectedFile: File | null
   }) => {
     const { selectedFeel, selectedFile } = data
 
     const dto: ActivityReview = {
       clothesId: clothesId,
-      feedback: selectedFeel || '',
+      feedback: feedbackMapping(selectedFeel || Feedback.Perfect) as Feedback,
       imageFile: selectedFile || undefined,
     }
 
@@ -166,14 +167,22 @@ const ReviewModal = ({
                       <button
                         key={feel}
                         type="button"
-                        onClick={() =>
+                        onClick={() => {
+                          const currentFeel = watch('selectedFeel')
+                          const selectedFeel =
+                            Feedback[feel as keyof typeof Feedback]
+
+                          // 현재 선택된 상태와 같으면 "완벽함"으로 설정하지 않고 그대로 유지
                           setValue(
                             'selectedFeel',
-                            watch('selectedFeel') === feel ? null : feel,
+                            currentFeel === selectedFeel
+                              ? currentFeel
+                              : selectedFeel,
                           )
-                        }
+                        }}
                         className={`flex items-center justify-center rounded-[16px] p-4 ${
-                          watch('selectedFeel') === feel
+                          watch('selectedFeel') ===
+                          Feedback[feel as keyof typeof Feedback]
                             ? 'bg-zinc-600 text-white'
                             : 'bg-zinc-100'
                         }`}
