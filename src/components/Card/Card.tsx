@@ -22,6 +22,18 @@ const getReviewEmoji = (review: string) => {
     return '😀'
   }
 }
+const getReviewFeedback = (review: string) => {
+  switch (review) {
+    case 'Perfect':
+      return '완벽함'
+    case 'Too Hot':
+      return '너무 더움'
+    case 'Too Cold':
+      return '너무 추움'
+    case 'Good':
+      return '좋음'
+  }
+}
 
 export const HistoryCard: React.FC<activityHistoryInfo> = (props) => {
   const language = useSelector((state: RootState) => state.language) as Language
@@ -52,7 +64,11 @@ export const HistoryCard: React.FC<activityHistoryInfo> = (props) => {
         )}
         {props.review.feedback ? (
           <div className="flex items-center gap-2">
-            <span className="font-bold">{props.review.feedback}</span>
+            <span className="font-bold">
+              {language === 'en'
+                ? `${props.review.feedback}`
+                : getReviewFeedback(props.review.feedback)}
+            </span>
             <span className="font-toss text-[1.5rem]">{reviewEmoji}</span>
           </div>
         ) : (
