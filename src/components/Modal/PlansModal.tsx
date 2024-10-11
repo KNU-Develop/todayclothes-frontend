@@ -151,12 +151,12 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                 : 'What are your main plans for today?'}
             </h2>
 
-            <form className="space-y-4" onSubmit={handleSubmit(handleLog)}>
+            <form onSubmit={handleSubmit(handleLog)}>
               {/* Activity Time */}
-              <div className="flex flex-col gap-[12px]">
-                <label className="font-notosanko text-[12px] font-medium leading-normal text-zinc-400">
-                  {language === 'ko' ? '활동 시간' : 'Activity Time'}
-                </label>
+              <label className="font-notosanko text-[12px] font-medium leading-normal text-zinc-400">
+                {language === 'ko' ? '활동 시간' : 'Activity Time'}
+              </label>
+              <div className="flex gap-[16px] pb-[40px] pt-[8px]">
                 <Controller
                   name="startTime"
                   control={control}
@@ -169,7 +169,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                         sx={{
                           backgroundColor: 'rgb(241, 241, 244)',
                           border: 'none',
-                          borderRadius: '16px',
+                          borderRadius: '8px',
                           fontFamily: 'font-notosanko',
                           '& .MuiOutlinedInput-root': {
                             '& fieldset': {
@@ -199,7 +199,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                         sx={{
                           backgroundColor: 'rgb(241, 241, 244)',
                           border: 'none',
-                          borderRadius: '16px',
+                          borderRadius: '8px',
                           fontFamily: 'font-notosanko',
                           '& .MuiOutlinedInput-root': {
                             '& fieldset': {
@@ -224,7 +224,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                 <label className="font-notosanko text-[12px] font-medium leading-normal text-zinc-400">
                   {language === 'ko' ? '활동 장소' : 'Activity Location'}
                 </label>
-                <div className="max-w-full">
+                <div className="max-w-full pb-[40px] pt-[8px]">
                   <Controller
                     name="selectedPlace"
                     control={control}
@@ -235,7 +235,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                           onChange: handlePlaceChange,
                           placeholder:
                             language === 'ko'
-                              ? '활동 장소를 입력하세요.'
+                              ? '활동 장소를 선택해주세요.'
                               : 'Enter activity location.',
                           styles: {
                             control: (provided) => ({
@@ -243,7 +243,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                               height: '3rem',
                               backgroundColor: 'rgb(241 241 244)',
                               border: '0px solid',
-                              borderRadius: '16px',
+                              borderRadius: '8px',
                               color: '#3C4350',
                             }),
                             input: (provided) => ({
@@ -268,11 +268,11 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                   name="activityType"
                   control={control}
                   render={({ field }) => (
-                    <div className="flex space-x-2">
+                    <div className="flex gap-[16px] pb-[40px] pt-[8px]">
                       <button
                         type="button"
                         onClick={() => field.onChange(ActivityType.Indoor)}
-                        className={`flex-1 rounded-[16px] px-2 py-4 font-notosanko font-semibold ${
+                        className={`flex-1 rounded-[16px] px-2 py-4 font-notosanko font-medium ${
                           field.value === ActivityType.Indoor
                             ? 'bg-red-100 text-red-600'
                             : 'bg-gray-100 text-gray-600'
@@ -283,7 +283,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                       <button
                         type="button"
                         onClick={() => field.onChange(ActivityType.Outdoor)}
-                        className={`flex-1 rounded-[16px] px-2 py-4 font-notosanko font-semibold ${
+                        className={`flex-1 rounded-[16px] px-2 py-4 font-notosanko font-medium ${
                           field.value === ActivityType.Outdoor
                             ? 'bg-red-100 text-red-600'
                             : 'bg-gray-100 text-gray-600'
@@ -305,13 +305,13 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                   name="activityStyle"
                   control={control}
                   render={({ field }) => (
-                    <div className="mb-[36px] grid grid-cols-2 gap-2">
+                    <div className="mb-[36px] grid grid-cols-2 gap-[8px] gap-x-[16px] pt-[8px]">
                       {activityStyles.map((style) => (
                         <button
                           key={style}
                           type="button"
                           onClick={() => field.onChange(style)}
-                          className={`rounded-[16px] px-2 py-4 font-notosanko font-semibold ${
+                          className={`rounded-[16px] px-2 py-4 font-notosanko font-medium ${
                             field.value === style
                               ? 'bg-red-100 text-red-600'
                               : 'bg-gray-100 text-gray-600'
@@ -326,17 +326,17 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
               </div>
 
               {/* Buttons */}
-              <div className="flex space-x-2">
+              <div className="flex gap-[12px]">
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="flex-1 rounded-[16px] bg-red-100 py-2 text-red-600"
+                  className="flex-1 rounded-[8px] bg-red-100 py-2 font-notosanko text-red-600"
                 >
                   {language === 'ko' ? '취소' : 'Cancel'}
                 </button>
                 <button
                   type="submit"
-                  className={`flex-1 rounded-[16px] py-2 font-notosanko text-white ${
+                  className={`flex-1 rounded-[8px] py-2 font-notosanko text-white ${
                     !isFormValid ? 'bg-gray-300' : 'bg-red-500'
                   }`}
                   disabled={!isFormValid}
