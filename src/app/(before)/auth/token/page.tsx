@@ -1,56 +1,52 @@
 'use client'
 
-import { setAccessToken } from '@/redux/slice/Login'
+import { setAccessToken, setRefreshToken } from '@/redux/slice/Login'
 import { RootState } from '@/redux/store'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import axios from 'axios'
-import { useQueryClient } from '@tanstack/react-query'
+import Cookies from 'js-cookie'
 
 const AuthToken = () => {
   const dispatch = useDispatch()
   const router = useRouter()
-  const queryClient = useQueryClient()
-  const { accessToken } = useSelector((state: RootState) => state.login)
+  const searchParams = useSearchParams()
 
-  // const fetchNewAccessToken = async () => {
-  //   try {
-  //     const response = await axios.post(
-  //       `${process.env.NEXT_PUBLIC_API_URL}/oauth/token`,
-  //       {
-  //         withCredentials: true, // Refresh Token은 HttpOnly Cookie로 전송
-  //       },
-  //     )
-  //     console.log(response)
+  const urlAccessToken = searchParams.get('accessToken')
+  const urlRefreshToken = searchParams.get('refreshToken')
 
-  //     const authHeader = response.headers['Authorization'] // 헤더에서 Access Token 추출
-  //     const newAccessToken = authHeader?.split(' ')[1] // 'Bearer <token>'에서 <token>만 추출
-
-  //     if (newAccessToken) {
-  //       dispatch(setAccessToken(newAccessToken)) // 새로운 Access Token을 Redux에 저장
-  //     } else {
-  //       throw new Error('No access token in response')
-  //     }
-  //   } catch (error) {
-  //     console.error('Failed to refresh token:', error)
-  //     router.push('/login') // 실패 시 로그인 페이지로 이동
-  //   }
-  // }
+  const { accessToken, refreshToken } = useSelector(
+    (state: RootState) => state.login,
+  )
 
   useEffect(() => {
-    console.log('Current accessToken:', accessToken) // accessToken 확인
-    
-    if (accessToken != null) {
-      // Access Token이 Redux에 존재하면 홈으로 이동
-      router.push('/home')
-    } else {
-      // Access Token이 없으면 Refresh Token으로 새로운 Access Token 요청
-      // fetchNewAccessToken()
-    }
-  }, [accessToken, dispatch, router])
+    if (urlAccessToken && urlRefreshToken) {
+      Cookies.set('access', accessToken || '', {
+        secure: true,
+        expires: new Date('2038-01-19T03:14:07.000Z'),
+      })
+      Cookies.set('refresh', refreshToken || '', {
+        secure: true,
+        expires: new Date('2038-01-19T03:14:07.000Z'),
+      })
 
-  return null
+      dispatch(setAccessToken(urlAccessToken))
+      dispatch(setRefreshToken(urlRefreshToken))
+    }
+
+    if (accessToken && refreshToken) {
+      router.push('/home') // 토큰이 있으면 홈으로 이동
+    } else {
+      router.push('/login') // 토큰이 없으면 로그인 페이지로 이동
+    }
+  }, [
+    accessToken,
+    refreshToken,
+    router,
+    urlAccessToken,
+    urlRefreshToken,
+    dispatch,
+  ])
 }
 
 export default AuthToken

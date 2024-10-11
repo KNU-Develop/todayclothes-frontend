@@ -16,7 +16,8 @@ export class Fetcher {
 
   private unAuthorizedHandler: () => void = () => {}
 
-  private tokenRefreshHandler: (access: string) => void = async () => {}
+  private tokenRefreshHandler: (access: string, refresh: string) => void =
+    async () => {}
 
   private errorHandler: (error: Error) => void = () => {}
 
@@ -28,7 +29,9 @@ export class Fetcher {
     this.errorHandler = handler
   }
 
-  public setTokenRefreshHandler(handler: (access: string) => void) {
+  public setTokenRefreshHandler(
+    handler: (access: string, refresh: string) => void,
+  ) {
     this.tokenRefreshHandler = handler
   }
 
@@ -50,7 +53,6 @@ export class Fetcher {
           'Content-Type': 'application/json',
           ...options?.headers,
         },
-        credentials: 'include',
       }
 
       const response = await fetch(`${this.baseUrl}${url}`, fetchOptions)
@@ -80,15 +82,15 @@ export class Fetcher {
     let data = null
 
     const access = useSelector((state: RootState) => state.login.accessToken) // Redux에서 accessToken 가져오기
-
+    const refresh = useSelector((state: RootState) => state.login.refreshToken) // Redux에서 refreshToken 가져오기
     const dispatch = useDispatch()
 
-    if (!access && global.window !== undefined) {
+    if (!access && !refresh && global.window !== undefined) {
       this.unAuthorizedHandler()
     }
 
-    if (!access) {
-      await this.generateNewAccessToken(dispatch)
+    if (!access && refresh) {
+      await this.generateNewAccessToken(refresh, dispatch)
     }
 
     try {
@@ -99,20 +101,19 @@ export class Fetcher {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        credentials: 'include',
       }
 
       const response = await fetch(`${this.baseUrl}${url}`, fetchOptions)
       // const response = await fetch(`/api${url}`, fetchOptions)
 
-      console.log(`Bearer ${access}`)
+      console.log(`Bearer ${client.getQueryData<string>(['access'])!}`)
 
       if (response.status === 401) {
         if (retry) {
           throw new Error('생성된 토큰이 비정상적입니다! 다시 로그인해주세요')
         }
 
-        await this.generateNewAccessToken(dispatch)
+        await this.generateNewAccessToken(refresh!, dispatch)
         return this.authRequest<ResponseType>(url, client, options, true)
       }
 
@@ -131,34 +132,38 @@ export class Fetcher {
     return data
   }
 
-  private generateNewAccessToken = async (dispatch: any) => {
+  private generateNewAccessToken = async (refresh: string, dispatch: any) => {
     let data = null
 
     try {
-      const res = await fetch(`${API_URL}/oauth/token`, {
-        credentials: 'include',
+      const res = await fetch(`${API_URL}/oauth/token/refresh`, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
+          [ACCESS_TOKEN_HEADER_KEY]: `Bearer ${refresh}`,
         },
       })
 
       if (res.ok) {
         data = await res.json()
-        const newAccessToken = res.headers.get(ACCESS_TOKEN_HEADER_KEY)
-
-        if (!newAccessToken) {
-          throw new Error('Failed to refresh access token.')
-        }
-
-        dispatch(setAccessToken(newAccessToken))
       } else {
         const error = await res.json()
         throw new Error(error.code)
       }
-    } catch (error) {
-      console.error('Token refresh failed:', error)
-      global.location.href = '/login' // 로그인 페이지로 리다이렉트
+
+      const newAccessToken = data?.result?.accessToken
+      // const newAccessToken = res.headers.get(ACCESS_TOKEN_HEADER_KEY)
+      // const newRefreshToken = res.headers.get(REFRESH_TOKEN_HEADER_KEY)
+
+      if (!newAccessToken) {
+        throw new Error('토큰 갱신에 실패하였습니다.')
+      }
+
+      dispatch(setAccessToken(newAccessToken))
+    } catch {
+      if (global.location) {
+        global.location.href = '/login'
+      }
       this.unAuthorizedHandler()
     }
   }

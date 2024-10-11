@@ -1,12 +1,11 @@
 'use client'
 
 import { RootState } from '@/redux/store'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { useSelector } from 'react-redux'
 
 const Login = () => {
   const language = useSelector((state: RootState) => state.language)
-  const router = useRouter()
 
   const textContent =
     language === 'ko'
@@ -42,7 +41,7 @@ const Login = () => {
         </p>
       </div>
       <div className="flex w-[528px] flex-col gap-6 rounded-sm px-6 py-12">
-        <a
+        <Link
           href={`${
             process.env.NEXT_PUBLIC_SOCIAL_LOGIN_GOOGLE
           }?redirect_uri=${process.env.VERCEL ? 'https://todayclothes.vercel.app' : 'http://localhost:3000/auth/token'}`}
@@ -53,12 +52,12 @@ const Login = () => {
               {textContent.google}
             </p>
           </button>
-        </a>
+        </Link>
 
-        <a
+        <Link
           href={`${
             process.env.NEXT_PUBLIC_SOCIAL_LOGIN_KAKAO
-          }?redirect_uri=${process.env.VERCEL ? 'https://todayclothes.vercel.app' : 'http://localhost:3000'}`}
+          }?redirect_uri=${process.env.VERCEL ? 'https://todayclothes.vercel.app' : 'http://localhost:3000/auth/token'}`}
         >
           <button className="flex w-full items-center bg-yellow-300 px-4 py-[10px] hover:bg-yellow-200">
             <img src="/icon/kakao.svg" alt="kakao" width="24" height="24" />
@@ -66,7 +65,7 @@ const Login = () => {
               {textContent.kakao}
             </p>
           </button>
-        </a>
+        </Link>
       </div>
     </div>
   )
