@@ -13,7 +13,7 @@ export default function HistoryPage() {
   const history = useActivityHistory().data?.result
 
   return (
-    <div className="scrollbar-hide flex min-h-screen min-w-[600px] flex-col gap-9 overflow-y-scroll p-9">
+    <div className="flex min-h-screen min-w-[600px] flex-col gap-9 overflow-y-scroll p-9 scrollbar-hide">
       {history ? (
         <>
           <Header />
