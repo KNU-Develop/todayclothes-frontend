@@ -7,31 +7,46 @@ import {
   ActivityWeatherResponse,
 } from './model'
 import { APIBuilder } from '@/api/lib/fetcher'
-import { act } from 'react'
+import { act, use } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '@/redux/store'
 
 export const ActivityService = {
-  async activityInfo(client: QueryClient, dto: ActivityWeatherInfo) {
-    return (
-      APIBuilder.post(`/clothes`)
-        // .withCredentials(client)
-        .build()
-        .call<ActivityWeatherResponse>({ body: JSON.stringify(dto) })
-    )
+  async activityInfo(
+    client: QueryClient,
+    access: string | null,
+    refresh: string | null,
+    dispatch: any,
+    dto: ActivityWeatherInfo,
+  ) {
+    return APIBuilder.post(`/clothes`)
+      .withCredentials(client, access, refresh, dispatch)
+      .build()
+      .call<ActivityWeatherResponse>({ body: JSON.stringify(dto) })
   },
-  async activityHistory(client: QueryClient) {
-    return (
-      APIBuilder.get(`/clothes`)
-        // .withCredentials(client)
-        .build()
-        .call<activityHistoryResponse>()
-    )
+  async activityHistory(
+    client: QueryClient,
+    access: string | null,
+    refresh: string | null,
+    dispatch: any,
+  ) {
+    console.log(access, refresh)
+
+    return APIBuilder.get(`/clothes`)
+      .withCredentials(client, access, refresh, dispatch)
+      .build()
+      .call<activityHistoryResponse>()
   },
-  async activityReview(client: QueryClient, dto: ActivityReview) {
-    return (
-      APIBuilder.post(`/clothes/review`)
-        // .withCredentials(client)
-        .build()
-        .call<ActivityReviewResponse>({ body: JSON.stringify(dto) })
-    )
+  async activityReview(
+    client: QueryClient,
+    access: string | null,
+    refresh: string | null,
+    dispatch: any,
+    dto: ActivityReview,
+  ) {
+    return APIBuilder.post(`/clothes/review`)
+      .withCredentials(client, access, refresh, dispatch)
+      .build()
+      .call<ActivityReviewResponse>({ body: JSON.stringify(dto) })
   },
 }

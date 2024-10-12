@@ -1,12 +1,11 @@
 'use client'
 
 import { RootState } from '@/redux/store'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { useSelector } from 'react-redux'
 
 const Login = () => {
   const language = useSelector((state: RootState) => state.language)
-  const router = useRouter()
 
   const textContent =
     language === 'ko'
@@ -42,33 +41,31 @@ const Login = () => {
         </p>
       </div>
       <div className="flex w-[528px] flex-col gap-6 rounded-sm px-6 py-12">
-        <button
-          onClick={() =>
-            router.push(
-              '/auth/token?accessToken=test_access_token&refreshToken=test_refresh_token',
-            )
-          }
-          className="flex items-center justify-between bg-white px-4 py-[10px] hover:bg-slate-50"
+        <Link
+          href={`${
+            process.env.NEXT_PUBLIC_SOCIAL_LOGIN_GOOGLE
+          }?redirect_uri=${process.env.VERCEL ? 'https://todayclothes.vercel.app' : 'http://localhost:3000/auth/token'}`}
         >
-          <img src="/icon/google.svg" alt="google" width="24" height="24" />
-          <p className="flex-1 font-notosanko text-[12px] font-medium">
-            {textContent.google}
-          </p>
-        </button>
+          <button className="flex w-full items-center justify-between bg-white px-4 py-[10px] hover:bg-slate-50">
+            <img src="/icon/google.svg" alt="google" width="24" height="24" />
+            <p className="flex-1 font-notosanko text-[12px] font-medium">
+              {textContent.google}
+            </p>
+          </button>
+        </Link>
 
-        <button
-          onClick={() =>
-            router.push(
-              '/auth/token?accessToken=test_access_token&refreshToken=test_refresh_token',
-            )
-          }
-          className="flex items-center bg-yellow-300 px-4 py-[10px] hover:bg-yellow-200"
+        <Link
+          href={`${
+            process.env.NEXT_PUBLIC_SOCIAL_LOGIN_KAKAO
+          }?redirect_uri=${process.env.VERCEL ? 'https://todayclothes.vercel.app' : 'http://localhost:3000/auth/token'}`}
         >
-          <img src="/icon/kakao.svg" alt="kakao" width="24" height="24" />
-          <p className="flex-1 font-notosanko text-[12px] font-medium">
-            {textContent.kakao}
-          </p>
-        </button>
+          <button className="flex w-full items-center bg-yellow-300 px-4 py-[10px] hover:bg-yellow-200">
+            <img src="/icon/kakao.svg" alt="kakao" width="24" height="24" />
+            <p className="flex-1 font-notosanko text-[12px] font-medium">
+              {textContent.kakao}
+            </p>
+          </button>
+        </Link>
       </div>
     </div>
   )

@@ -32,7 +32,7 @@ export default function RootLayout({
           <ReactQueryProvider>
             <ReduxProvider>
               <WeatherProvider>
-                <div>{children}</div>
+                <div className="container">{children}</div>
               </WeatherProvider>
             </ReduxProvider>
           </ReactQueryProvider>
