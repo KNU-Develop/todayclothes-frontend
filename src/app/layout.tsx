@@ -4,7 +4,7 @@ import { MSWComponent } from '@/api/MSWComponent'
 import { cn } from '@/lib/utils'
 import ReactQueryProvider from '@/providers/ReactQueryProvider'
 import ReduxProvider from '@/providers/ReduxProvider'
-import { WeatherProvider } from '@/providers/WeatherProviter'
+import { WeatherProvider } from '@/providers/WeatherProvider'
 
 export const metadata: Metadata = {
   title: 'Create Next App',

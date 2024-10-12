@@ -11,7 +11,7 @@ import GooglePlacesAutocomplete, {
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
-import { useWeatherContext } from '@/providers/WeatherProviter'
+import { useWeatherContext } from '@/providers/WeatherProvider'
 import { ActivityStyle, ActivityType } from '@/api'
 
 interface PlansModalProps {
