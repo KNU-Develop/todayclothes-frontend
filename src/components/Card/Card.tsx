@@ -11,33 +11,32 @@ import ReviewModal from '../Modal/ReviewModal'
 
 type Language = 'en' | 'ko'
 
-const getReviewEmoji = (review: string) => {
-  if (review === 'Perfect') {
+const getReviewEmoji = (review?: string) => {
+  if (review === 'PERFECT') {
     return '👍'
-  } else if (review === 'Too Hot') {
+  } else if (review === 'HOT') {
     return '🥵'
-  } else if (review === 'Too Cold') {
+  } else if (review === 'COLD') {
     return '🥶'
-  } else if (review === 'Good') {
-    return '😀'
   }
+  return null
 }
-const getReviewFeedback = (review: string) => {
+const getReviewFeedback = (review?: string) => {
   switch (review) {
-    case 'Perfect':
+    case 'PERFECT':
       return '완벽함'
-    case 'Too Hot':
+    case 'HOT':
       return '너무 더움'
-    case 'Too Cold':
+    case 'COLD':
       return '너무 추움'
-    case 'Good':
-      return '좋음'
+    default:
+      return null
   }
 }
 
 export const HistoryCard: React.FC<activityHistoryInfo> = (props) => {
   const language = useSelector((state: RootState) => state.language) as Language
-  const reviewEmoji = getReviewEmoji(props.review.feedback)
+  const reviewEmoji = getReviewEmoji(props.review?.feedback)
   const { isVisible, openModal, closeModal } = useModal()
 
   const handleOnClick = () => {
@@ -48,26 +47,26 @@ export const HistoryCard: React.FC<activityHistoryInfo> = (props) => {
     <div className="flex flex-col gap-3">
       <HistoryWeatherInfo {...props} />
       <Image
-        src={props.imgPath}
+        src={props?.imgPath || ''}
         alt="error"
         width={520}
         height={540}
         className="h-[540px] w-[520px]"
       />
       <div className="flex items-center justify-between rounded-[16px] bg-zinc-100 p-4 font-notosanko text-[16px]">
-        {props.review.feedback ? (
-          <span className={`${props.review.feedback ? 'text-zinc-400' : ''}`}>
+        {props.review?.feedback ? (
+          <span className={`${props.review?.feedback ? 'text-zinc-400' : ''}`}>
             {language === 'en' ? 'Written Review' : '작성된 리뷰'}
           </span>
         ) : (
           <span>{language === 'en' ? 'Write Review' : '리뷰 작성하기'}</span>
         )}
-        {props.review.feedback ? (
+        {props.review?.feedback ? (
           <div className="flex items-center gap-2">
             <span className="font-bold">
               {language === 'en'
-                ? `${props.review.feedback}`
-                : getReviewFeedback(props.review.feedback)}
+                ? `${props.review?.feedback || ''}`
+                : getReviewFeedback(props.review?.feedback || '')}
             </span>
             <span className="font-toss text-[1.5rem]">{reviewEmoji}</span>
           </div>

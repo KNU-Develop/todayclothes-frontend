@@ -18,14 +18,10 @@ export enum Feedback {
   Too_Cold = '너무 추움',
 }
 
-export interface ActivityTime {
-  start: string
-  end: string
-}
-
 export interface ActivityWeatherInfo {
   location: string
-  time: ActivityTime
+  startTime: string
+  endTime: string
   type: ActivityType
   style: ActivityStyle
   weather: number
@@ -53,14 +49,15 @@ export interface activityHistoryInfo {
 
 export interface activityHistoryResponse {
   code: number
-  state: string
+  message: string
   result: activityHistoryInfo[] | []
 }
 
 export interface ActivityWeatherResponse {
   code: number
-  state: string
+  message: string
   result: {
+    location: string,
     imgPath: string
     comment: string
     type: ActivityType
@@ -86,7 +83,7 @@ export interface ActivityReview {
 
 export interface ActivityReviewResponse {
   code: number
-  state: string
+  message: string
   result: null
 }
 

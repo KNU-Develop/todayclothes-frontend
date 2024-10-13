@@ -7,9 +7,6 @@ import {
   ActivityWeatherResponse,
 } from './model'
 import { APIBuilder } from '@/api/lib/fetcher'
-import { act, use } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '@/redux/store'
 
 export const ActivityService = {
   async activityInfo(
@@ -19,7 +16,7 @@ export const ActivityService = {
     dispatch: any,
     dto: ActivityWeatherInfo,
   ) {
-    return APIBuilder.post(`/clothes`)
+    return APIBuilder.post(`/event`)
       .withCredentials(client, access, refresh, dispatch)
       .build()
       .call<ActivityWeatherResponse>({ body: JSON.stringify(dto) })
@@ -30,9 +27,7 @@ export const ActivityService = {
     refresh: string | null,
     dispatch: any,
   ) {
-    console.log(access, refresh)
-
-    return APIBuilder.get(`/clothes`)
+    return APIBuilder.get(`/event`)
       .withCredentials(client, access, refresh, dispatch)
       .build()
       .call<activityHistoryResponse>()
@@ -42,11 +37,11 @@ export const ActivityService = {
     access: string | null,
     refresh: string | null,
     dispatch: any,
-    dto: ActivityReview,
+    formData: FormData,
   ) {
     return APIBuilder.post(`/clothes/review`)
       .withCredentials(client, access, refresh, dispatch)
       .build()
-      .call<ActivityReviewResponse>({ body: JSON.stringify(dto) })
+      .call<ActivityReviewResponse>({ body: formData })
   },
 }

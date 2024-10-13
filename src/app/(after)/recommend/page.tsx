@@ -22,6 +22,7 @@ import { useWeatherContext } from '@/providers/WeatherProvider'
 import { RootState } from '@/redux/store'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useQueryClient } from '@tanstack/react-query'
 
 const Recommend = () => {
   const { isVisible, openModal, closeModal } = useModal()
@@ -30,14 +31,13 @@ const Recommend = () => {
   const { translate, translatedText } = useTranslate()
   const { weatherData } = useWeatherContext()
   const [query, setQuery] = useState<ActivityWeatherInfo>()
+  const queryClient = useQueryClient()
 
   // POST
   const { data: activityInfo, mutate: mutateActivityInfo } = useActivityInfo({
     onSuccess: () => {
       console.log('SUCCESS')
-    },
-    onError: (e) => {
-      console.log(e)
+      queryClient.invalidateQueries({ queryKey: ['activityHistory'] })
     },
   })
 
@@ -58,10 +58,8 @@ const Recommend = () => {
 
       setQuery({
         location: todayWeather.city.name,
-        time: {
-          start: weatherData.startTime || '',
-          end: weatherData.endTime || '',
-        },
+        startTime: weatherData.startTime || '',
+        endTime: weatherData.endTime || '',
         type: typeMapping(
           weatherData.type || ActivityType.Indoor,
         ) as ActivityType,
@@ -78,10 +76,8 @@ const Recommend = () => {
 
       mutateActivityInfo({
         location: todayWeather.city.name,
-        time: {
-          start: weatherData.startTime || '',
-          end: weatherData.endTime || '',
-        },
+        startTime: weatherData.startTime || '',
+        endTime: weatherData.endTime || '',
         type: typeMapping(
           weatherData.type || ActivityType.Indoor,
         ) as ActivityType,
@@ -116,7 +112,7 @@ const Recommend = () => {
   }, [todayWeather])
 
   return (
-    <div className="flex min-h-screen min-w-[600px] flex-col gap-9 p-9">
+    <div className="flex min-h-screen min-w-[600px] flex-col gap-9 bg-white p-9">
       {!loading ? (
         <>
           <Header />
@@ -130,7 +126,7 @@ const Recommend = () => {
             alt="이미지"
             className="h-[600px] w-full py-[30px]"
           />
-          <p className="text-[20px] font-semibold text-gray-500">
+          <p className="font-notosanko text-[20px] font-semibold text-gray-500">
             {language === 'en' && translatedText
               ? translatedText[0]?.translations[0]?.text
               : activityInfo?.result?.comment}

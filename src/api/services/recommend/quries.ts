@@ -16,6 +16,7 @@ import {
 } from './model'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
+import { CustomQueryOptions } from '@/api/type'
 
 export const activityOptions = {
   activityWeatherInfo: (
@@ -43,8 +44,8 @@ export const activityOptions = {
     refresh: string | null,
     dispatch: any,
   ) => ({
-    mutationFn: (dto: ActivityReview) =>
-      ActivityService.activityReview(client, access, refresh, dispatch, dto),
+    mutationFn: (formData: FormData) =>
+      ActivityService.activityReview(client, access, refresh, dispatch, formData),
   }),
 }
 
@@ -72,7 +73,7 @@ export const useActivityInfo = (
   })
 }
 export const useActivityHistory = (
-  options: QueryOptions<activityHistoryResponse> = {},
+  options: CustomQueryOptions<activityHistoryResponse> = {},
 ) => {
   const queryClient = useQueryClient()
 
@@ -91,7 +92,7 @@ export const useActivityHistory = (
   })
 }
 export const useActivityReview = (
-  options: MutationOptions<ActivityReviewResponse, Error, ActivityReview> = {},
+  options: MutationOptions<ActivityReviewResponse, Error, FormData> = {},
 ) => {
   const queryClient = useQueryClient()
 
@@ -99,7 +100,7 @@ export const useActivityReview = (
   const refresh = useSelector((state: RootState) => state.login.refreshToken)
   const dispatch = useDispatch()
 
-  return useMutation<ActivityReviewResponse, Error, ActivityReview>({
+  return useMutation<ActivityReviewResponse, Error, FormData>({
     ...activityOptions.activityReview(queryClient, access, refresh, dispatch),
     ...options,
   })

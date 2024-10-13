@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn('min-h-screen bg-background antialiased')}>
+      <body className={cn('min-h-screen bg-zinc-50 antialiased')}>
         {process.env.NEXT_PUBLIC_MSW === 'enable' ? (
           <MSWComponent>
             <ReactQueryProvider>
