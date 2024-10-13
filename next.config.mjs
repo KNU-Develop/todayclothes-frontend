@@ -16,6 +16,16 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
 
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'todayclothes-file.s3.ap-northeast-2.amazonaws.com',
+        pathname: '/clothes/**',
+      },
+    ],
+  },
+
   webpack(config, { isServer }) {
     if (isServer) {
       config.resolve.alias['msw/browser'] = false
