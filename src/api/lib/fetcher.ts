@@ -6,9 +6,6 @@ import { QueryClient } from '@tanstack/react-query'
 
 import { ACCESS_TOKEN_HEADER_KEY } from '../constants/header-key'
 
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '@/redux/store'
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://localhost:8080'
 
 export class Fetcher {
@@ -98,14 +95,16 @@ export class Fetcher {
         headers: {
           [ACCESS_TOKEN_HEADER_KEY]: `Bearer ${access}`,
           Accept: 'application/json',
-          'Content-Type': 'application/json',
+          ...(options?.body instanceof FormData
+            ? {}
+            : { 'Content-Type': 'application/json' }),
         },
       }
 
       // const response = await fetch(`${this.baseUrl}${url}`, fetchOptions)
       const response = await fetch(`/api${url}`, fetchOptions)
 
-      console.log(`Bearer ${client.getQueryData<string>(['access'])!}`)
+      console.log(`Bearer ${access}`)
 
       if (response.status === 401) {
         if (retry) {
@@ -143,7 +142,7 @@ export class Fetcher {
     let data = null
 
     try {
-      const res = await fetch(`${API_URL}/oauth/token/refresh`, {
+      const res = await fetch(`${API_URL}/reissue`, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
