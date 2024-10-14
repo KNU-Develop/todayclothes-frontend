@@ -13,7 +13,6 @@ import { LoadingAvatar } from '@/components/Avatar/Avatar'
 import { getRecommendData } from '@/components/Date/getRecommendData'
 import Header from '@/components/Header/Header'
 import { ActivityWeather } from '@/components/Info/ActivityWeather'
-import { styleMapping, typeMapping } from '@/components/Mapping/mapping'
 import NavigationBar from '@/components/NavigationBar/NavigationBar'
 import PlansModal from '@/components/Modal/PlansModal'
 import { useModal } from '@/hooks/useModal/useModal'
@@ -60,12 +59,8 @@ const Recommend = () => {
         location: todayWeather.city.name,
         startTime: weatherData.startTime || '',
         endTime: weatherData.endTime || '',
-        type: typeMapping(
-          weatherData.type || ActivityType.Indoor,
-        ) as ActivityType,
-        style: styleMapping(
-          weatherData.style || ActivityStyle.Amekaji,
-        ) as ActivityStyle,
+        type: weatherData.type || ActivityType.Indoor,
+        style: weatherData.style || ActivityStyle.Amekaji,
         weather: filteredWeather.tempCode,
         wind: filteredWeather.wind,
         rain: filteredWeather.rain,
@@ -78,12 +73,8 @@ const Recommend = () => {
         location: todayWeather.city.name,
         startTime: weatherData.startTime || '',
         endTime: weatherData.endTime || '',
-        type: typeMapping(
-          weatherData.type || ActivityType.Indoor,
-        ) as ActivityType,
-        style: styleMapping(
-          weatherData.style || ActivityStyle.Amekaji,
-        ) as ActivityStyle,
+        type: weatherData.type || ActivityType.Indoor,
+        style: weatherData.style || ActivityStyle.Amekaji,
         weather: filteredWeather.tempCode,
         wind: filteredWeather.wind,
         rain: filteredWeather.rain,

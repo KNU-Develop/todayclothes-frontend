@@ -58,9 +58,7 @@ const HomePage = () => {
 
   if (navigatorError) {
     return (
-      <div
-        className={`flex min-h-screen flex-col gap-[1vh] bg-rose-100 p-[2vw]`}
-      >
+      <div className={`flex min-h-screen flex-col gap-9 bg-rose-100 p-9`}>
         <Header />
         <LocationRequired />
         <HomeAvatar />
@@ -71,7 +69,7 @@ const HomePage = () => {
 
   return (
     <div
-      className={`flex min-h-screen flex-col p-[2vw] bg-${!loading ? background : 'white'}`}
+      className={`flex min-h-screen flex-col p-9 bg-${!loading ? background : 'white'}`}
     >
       {!loading && background ? (
         <div className="flex flex-col gap-9">
