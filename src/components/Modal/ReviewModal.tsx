@@ -8,6 +8,7 @@ import { useForm } from 'react-hook-form'
 import { useActivityReview } from '@/api/services/recommend/quries'
 import { ActivityReview, Feedback } from '@/api/services/recommend/model'
 import { feedbackMapping } from '../Mapping/mapping'
+import { useQueryClient } from '@tanstack/react-query'
 
 const ReviewModal = ({
   clothesId,
@@ -20,6 +21,7 @@ const ReviewModal = ({
 }) => {
   const language = useSelector((state: RootState) => state.language)
   const activityReview = useActivityReview()
+  const queryClient = useQueryClient()
 
   const { handleSubmit, setValue, watch, reset } = useForm<{
     selectedFeel: Feedback | null
@@ -44,7 +46,7 @@ const ReviewModal = ({
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0]
-      setValue('selectedFile', file) // react-hook-form의 setValue 사용
+      setValue('selectedFile', file)
     }
   }
 
@@ -114,27 +116,38 @@ const ReviewModal = ({
     }
   }
 
-  const onSubmit = (data: {
+  const onSubmit = async (data: {
     selectedFeel: Feedback | null
     selectedFile: File | null
   }) => {
     const { selectedFeel, selectedFile } = data
 
-    const dto: ActivityReview = {
+    const formData = new FormData()
+
+    const reviewReq = {
       clothesId: clothesId,
-      feedback: feedbackMapping(selectedFeel || Feedback.Perfect) as Feedback,
-      imageFile: selectedFile || undefined,
+      feedback: feedbackMapping(selectedFeel || Feedback.Perfect),
+    }
+    formData.append(
+      'reviewReq',
+      new Blob([JSON.stringify(reviewReq)], { type: 'application/json' }),
+    )
+
+    if (selectedFile) {
+      formData.append('imageFile', selectedFile)
     }
 
-    activityReview.mutate(dto, {
-      onSuccess: () => {
-        console.log('Success:', dto)
-        handleCloseModal()
-      },
-      onError: (e) => {
-        console.error(e)
-      },
-    })
+    try {
+      await activityReview.mutateAsync(formData, {
+        onSuccess: () => {
+          console.log('Success:', formData)
+          queryClient.invalidateQueries({ queryKey: ['activityHistory'] })
+          handleCloseModal()
+        },
+      })
+    } catch (error) {
+      console.error('Error submitting review:', error)
+    }
   }
 
   const handleCloseModal = () => {

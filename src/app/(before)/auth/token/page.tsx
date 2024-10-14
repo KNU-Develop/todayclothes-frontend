@@ -5,6 +5,7 @@ import { RootState } from '@/redux/store'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import Cookies from 'js-cookie'
 
 const AuthToken = () => {
   const dispatch = useDispatch()
@@ -20,7 +21,15 @@ const AuthToken = () => {
 
   useEffect(() => {
     if (urlAccessToken && urlRefreshToken) {
-      // URL에서 받은 토큰을 Redux에 저장
+      // Cookies.set('access', accessToken || '', {
+      //   secure: true,
+      //   expires: new Date('2038-01-19T03:14:07.000Z'),
+      // })
+      // Cookies.set('refresh', refreshToken || '', {
+      //   secure: true,
+      //   expires: new Date('2038-01-19T03:14:07.000Z'),
+      // })
+
       dispatch(setAccessToken(urlAccessToken))
       dispatch(setRefreshToken(urlRefreshToken))
     }

@@ -30,28 +30,28 @@ const NavigationBar: React.FC<NavigationBarProps> = ({ color, openModal }) => {
 
   return (
     <div
-      className={`flex h-fit w-full items-center justify-between rounded-[40px] px-14 py-2 shadow-base ${variants[color].bg}`}
+      className={`flex h-fit w-full items-center justify-between rounded-[40px] px-14 py-3 shadow-base ${variants[color].bg}`}
     >
       <History
-        size={'2.5em'}
+        size={'2.3em'}
         className={`cursor-pointer ${variants[color].text}`}
         onClick={handleHistoryClick}
       />
       {color === 'zinc' ? (
         <RotateCw
-          size={'2.5em'}
+          size={'2.3em'}
           className="cursor-pointer text-zinc-600"
           onClick={handleRotateClick}
         />
       ) : (
         <Plus
-          size={'3em'}
+          size={'2.5em'}
           className={`cursor-pointer ${variants[color].text}`}
           onClick={handlePlusClick}
         />
       )}
       <User
-        size={'2.5em'}
+        size={'2.3em'}
         className={`cursor-pointer ${variants[color].text} ${variants[color].fill}`}
         onClick={handleUserClick}
       />

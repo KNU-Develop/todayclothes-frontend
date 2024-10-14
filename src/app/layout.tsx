@@ -4,7 +4,7 @@ import { MSWComponent } from '@/api/MSWComponent'
 import { cn } from '@/lib/utils'
 import ReactQueryProvider from '@/providers/ReactQueryProvider'
 import ReduxProvider from '@/providers/ReduxProvider'
-import { WeatherProvider } from '@/providers/WeatherProviter'
+import { WeatherProvider } from '@/providers/WeatherProvider'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn('min-h-screen bg-background antialiased')}>
+      <body className={cn('min-h-screen bg-zinc-50 antialiased')}>
         {process.env.NEXT_PUBLIC_MSW === 'enable' ? (
           <MSWComponent>
             <ReactQueryProvider>
@@ -32,7 +32,7 @@ export default function RootLayout({
           <ReactQueryProvider>
             <ReduxProvider>
               <WeatherProvider>
-                <div>{children}</div>
+                <div className="container">{children}</div>
               </WeatherProvider>
             </ReduxProvider>
           </ReactQueryProvider>

@@ -6,9 +6,6 @@ import { QueryClient } from '@tanstack/react-query'
 
 import { ACCESS_TOKEN_HEADER_KEY } from '../constants/header-key'
 
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '@/redux/store'
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://localhost:8080'
 
 export class Fetcher {
@@ -55,8 +52,8 @@ export class Fetcher {
         },
       }
 
-      const response = await fetch(`${this.baseUrl}${url}`, fetchOptions)
-      // const response = await fetch(`/api${url}`, fetchOptions)
+      // const response = await fetch(`${this.baseUrl}${url}`, fetchOptions)
+      const response = await fetch(`/api${url}`, fetchOptions)
 
       if (response.ok) {
         data = (await response.json()) as Promise<ResponseType>
@@ -76,14 +73,13 @@ export class Fetcher {
   private async authRequest<ResponseType>(
     url: string,
     client: QueryClient,
+    access: string | null,
+    refresh: string | null,
+    dispatch: any,
     options?: RequestInit,
     retry: boolean = false,
   ): Promise<ResponseType> {
     let data = null
-
-    const access = useSelector((state: RootState) => state.login.accessToken) // Redux에서 accessToken 가져오기
-    const refresh = useSelector((state: RootState) => state.login.refreshToken) // Redux에서 refreshToken 가져오기
-    const dispatch = useDispatch()
 
     if (!access && !refresh && global.window !== undefined) {
       this.unAuthorizedHandler()
@@ -99,14 +95,16 @@ export class Fetcher {
         headers: {
           [ACCESS_TOKEN_HEADER_KEY]: `Bearer ${access}`,
           Accept: 'application/json',
-          'Content-Type': 'application/json',
+          ...(options?.body instanceof FormData
+            ? {}
+            : { 'Content-Type': 'application/json' }),
         },
       }
 
-      const response = await fetch(`${this.baseUrl}${url}`, fetchOptions)
-      // const response = await fetch(`/api${url}`, fetchOptions)
+      // const response = await fetch(`${this.baseUrl}${url}`, fetchOptions)
+      const response = await fetch(`/api${url}`, fetchOptions)
 
-      console.log(`Bearer ${client.getQueryData<string>(['access'])!}`)
+      console.log(`Bearer ${access}`)
 
       if (response.status === 401) {
         if (retry) {
@@ -114,7 +112,15 @@ export class Fetcher {
         }
 
         await this.generateNewAccessToken(refresh!, dispatch)
-        return this.authRequest<ResponseType>(url, client, options, true)
+        return this.authRequest<ResponseType>(
+          url,
+          client,
+          access,
+          refresh,
+          dispatch,
+          options,
+          true,
+        )
       }
 
       if (response.ok) {
@@ -136,7 +142,7 @@ export class Fetcher {
     let data = null
 
     try {
-      const res = await fetch(`${API_URL}/oauth/token/refresh`, {
+      const res = await fetch(`${API_URL}/reissue`, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -175,9 +181,19 @@ export class Fetcher {
   public async authGet<ResponseType>(
     url: string,
     client: QueryClient,
+    access: string | null,
+    refresh: string | null,
+    dispatch: any,
     options?: RequestInit,
   ) {
-    return this.authRequest<ResponseType>(url, client, options)
+    return this.authRequest<ResponseType>(
+      url,
+      client,
+      access,
+      refresh,
+      dispatch,
+      options,
+    )
   }
 
   public async post<ResponseType>(url: string, options?: RequestInit) {
@@ -190,12 +206,22 @@ export class Fetcher {
   public async authPost<ResponseType>(
     url: string,
     client: QueryClient,
+    access: string | null,
+    refresh: string | null,
+    dispatch: any,
     options?: RequestInit,
   ) {
-    return this.authRequest<ResponseType>(url, client, {
-      method: 'POST',
-      ...options,
-    })
+    return this.authRequest<ResponseType>(
+      url,
+      client,
+      access,
+      refresh,
+      dispatch,
+      {
+        method: 'POST',
+        ...options,
+      },
+    )
   }
 
   public async put<ResponseType = Error>(url: string, options?: RequestInit) {
@@ -208,12 +234,22 @@ export class Fetcher {
   public async authPut<ResponseType = Error>(
     url: string,
     client: QueryClient,
+    access: string | null,
+    refresh: string | null,
+    dispatch: any,
     options?: RequestInit,
   ) {
-    return this.authRequest<ResponseType>(url, client, {
-      method: 'PUT',
-      ...options,
-    })
+    return this.authRequest<ResponseType>(
+      url,
+      client,
+      access,
+      refresh,
+      dispatch,
+      {
+        method: 'PUT',
+        ...options,
+      },
+    )
   }
 
   public async patch<ResponseType = Error>(url: string, options?: RequestInit) {
@@ -226,12 +262,22 @@ export class Fetcher {
   public async authPatch<ResponseType = Error>(
     url: string,
     client: QueryClient,
+    access: string | null,
+    refresh: string | null,
+    dispatch: any,
     options?: RequestInit,
   ) {
-    return this.authRequest<ResponseType>(url, client, {
-      method: 'PATCH',
-      ...options,
-    })
+    return this.authRequest<ResponseType>(
+      url,
+      client,
+      access,
+      refresh,
+      dispatch,
+      {
+        method: 'PATCH',
+        ...options,
+      },
+    )
   }
 
   public async delete<ResponseType = Error>(
@@ -247,12 +293,22 @@ export class Fetcher {
   public async authDelete<ResponseType = Error>(
     url: string,
     client: QueryClient,
+    access: string | null,
+    refresh: string | null,
+    dispatch: any,
     options?: RequestInit,
   ) {
-    return this.authRequest<ResponseType>(url, client, {
-      method: 'DELETE',
-      ...options,
-    })
+    return this.authRequest<ResponseType>(
+      url,
+      client,
+      access,
+      refresh,
+      dispatch,
+      {
+        method: 'DELETE',
+        ...options,
+      },
+    )
   }
 }
 
@@ -269,10 +325,26 @@ export class API {
 
   private isAuth = false
 
-  public constructor(method: Method, url: string, isAuth = false) {
+  private accessToken: string | null
+
+  private refreshToken: string | null
+
+  private dispatch: any
+
+  public constructor(
+    method: Method,
+    url: string,
+    isAuth = false,
+    accessToken: string | null,
+    refreshToken: string | null,
+    dispatch: any,
+  ) {
     this.method = method
     this.url = url
     this.isAuth = isAuth
+    this.accessToken = accessToken
+    this.refreshToken = refreshToken
+    this.dispatch = dispatch
   }
 
   public setQueryClient(client: QueryClient) {
@@ -285,6 +357,17 @@ export class API {
     return this
   }
 
+  public setReduxDispatch(
+    accessToken: string | null,
+    refreshToken: string | null,
+    dispatch: any,
+  ) {
+    this.accessToken = accessToken
+    this.refreshToken = refreshToken
+    this.dispatch = dispatch
+    return this
+  }
+
   private async authRequest<ResponseType>(options?: RequestInit) {
     if (!this.queryClient) {
       throw new Error('QueryClient is not set')
@@ -294,30 +377,45 @@ export class API {
         return baseFetcher.authGet<ResponseType>(
           this.url,
           this.queryClient,
+          this.accessToken,
+          this.refreshToken,
+          this.dispatch,
           options,
         )
       case 'POST':
         return baseFetcher.authPost<ResponseType>(
           this.url,
           this.queryClient,
+          this.accessToken,
+          this.refreshToken,
+          this.dispatch,
           options,
         )
       case 'PUT':
         return baseFetcher.authPut<ResponseType>(
           this.url,
           this.queryClient,
+          this.accessToken,
+          this.refreshToken,
+          this.dispatch,
           options,
         )
       case 'PATCH':
         return baseFetcher.authPatch<ResponseType>(
           this.url,
           this.queryClient,
+          this.accessToken,
+          this.refreshToken,
+          this.dispatch,
           options,
         )
       case 'DELETE':
         return baseFetcher.authDelete<ResponseType>(
           this.url,
           this.queryClient,
+          this.accessToken,
+          this.refreshToken,
+          this.dispatch,
           options,
         )
       default:
@@ -371,14 +469,21 @@ export class APIBuilder {
   }
 
   private constructor(method: Method, url: string) {
-    this.api = new API(method, url)
+    this.api = new API(method, url, false, '', '', '')
   }
 
-  public withCredentials(queryClient: QueryClient) {
-    this.api.setQueryClient(queryClient).setAuth(true)
+  public withCredentials(
+    queryClient: QueryClient,
+    accessToken: string | null,
+    refreshToken: string | null,
+    dispatch: any,
+  ) {
+    this.api
+      .setQueryClient(queryClient)
+      .setAuth(true)
+      .setReduxDispatch(accessToken, refreshToken, dispatch)
     return this
   }
-
   public build() {
     return this.api
   }

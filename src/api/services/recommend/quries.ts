@@ -14,19 +14,38 @@ import {
   ActivityWeatherInfo,
   ActivityWeatherResponse,
 } from './model'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '@/redux/store'
+import { CustomQueryOptions } from '@/api/type'
 
 export const activityOptions = {
-  activityWeatherInfo: (client: QueryClient) => ({
+  activityWeatherInfo: (
+    client: QueryClient,
+    access: string | null,
+    refresh: string | null,
+    dispatch: any,
+  ) => ({
     mutationFn: (dto: ActivityWeatherInfo) =>
-      ActivityService.activityInfo(client, dto),
+      ActivityService.activityInfo(client, access, refresh, dispatch, dto),
   }),
-  activityWeatherHistory: (client: QueryClient) => ({
+  activityWeatherHistory: (
+    client: QueryClient,
+    access: string | null,
+    refresh: string | null,
+    dispatch: any,
+  ) => ({
     queryKey: ['activityHistory'],
-    queryFn: () => ActivityService.activityHistory(client),
+    queryFn: () =>
+      ActivityService.activityHistory(client, access, refresh, dispatch),
   }),
-  activityReview: (client: QueryClient) => ({
-    mutationFn: (dto: ActivityReview) =>
-      ActivityService.activityReview(client, dto),
+  activityReview: (
+    client: QueryClient,
+    access: string | null,
+    refresh: string | null,
+    dispatch: any,
+  ) => ({
+    mutationFn: (formData: FormData) =>
+      ActivityService.activityReview(client, access, refresh, dispatch, formData),
   }),
 }
 
@@ -39,28 +58,50 @@ export const useActivityInfo = (
 ) => {
   const queryClient = useQueryClient()
 
+  const access = useSelector((state: RootState) => state.login.accessToken)
+  const refresh = useSelector((state: RootState) => state.login.refreshToken)
+  const dispatch = useDispatch()
+
   return useMutation<ActivityWeatherResponse, Error, ActivityWeatherInfo>({
-    ...activityOptions.activityWeatherInfo(queryClient),
+    ...activityOptions.activityWeatherInfo(
+      queryClient,
+      access,
+      refresh,
+      dispatch,
+    ),
     ...options,
   })
 }
 export const useActivityHistory = (
-  options: QueryOptions<activityHistoryResponse> = {},
+  options: CustomQueryOptions<activityHistoryResponse> = {},
 ) => {
   const queryClient = useQueryClient()
 
+  const access = useSelector((state: RootState) => state.login.accessToken)
+  const refresh = useSelector((state: RootState) => state.login.refreshToken)
+  const dispatch = useDispatch()
+
   return useQuery<activityHistoryResponse>({
-    ...activityOptions.activityWeatherHistory(queryClient),
+    ...activityOptions.activityWeatherHistory(
+      queryClient,
+      access,
+      refresh,
+      dispatch,
+    ),
     ...options,
   })
 }
 export const useActivityReview = (
-  options: MutationOptions<ActivityReviewResponse, Error, ActivityReview> = {},
+  options: MutationOptions<ActivityReviewResponse, Error, FormData> = {},
 ) => {
   const queryClient = useQueryClient()
 
-  return useMutation<ActivityReviewResponse, Error, ActivityReview>({
-    ...activityOptions.activityReview(queryClient),
+  const access = useSelector((state: RootState) => state.login.accessToken)
+  const refresh = useSelector((state: RootState) => state.login.refreshToken)
+  const dispatch = useDispatch()
+
+  return useMutation<ActivityReviewResponse, Error, FormData>({
+    ...activityOptions.activityReview(queryClient, access, refresh, dispatch),
     ...options,
   })
 }

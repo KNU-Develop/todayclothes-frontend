@@ -1,31 +1,27 @@
 export enum ActivityType {
-  Indoor = '실내',
-  Outdoor = '실외',
+  Indoor = 'INDOORS',
+  Outdoor = 'OUTDOORS',
 }
 
 export enum ActivityStyle {
-  BusinessCasual = '비즈니스 캐주얼',
-  Minimal = '미니멀',
-  Street = '스트릿',
-  Casual = '캐주얼',
-  Sports = '스포츠',
-  Amekaji = '아메카지',
+  BusinessCasual = 'BUSINESS_CASUAL',
+  Minimal = 'MINIMAL',
+  Street = 'STREET',
+  Casual = 'CASUAL',
+  Sports = 'SPORTS',
+  Amekaji = 'AMEKAJI',
 }
 
 export enum Feedback {
-  Perfect = '완벽함',
-  Too_Hot = '너무 더움',
-  Too_Cold = '너무 추움',
-}
-
-export interface ActivityTime {
-  start: string
-  end: string
+  Perfect = 'PERFECT',
+  Too_Hot = 'HOT',
+  Too_Cold = 'COLD',
 }
 
 export interface ActivityWeatherInfo {
   location: string
-  time: ActivityTime
+  startTime: string
+  endTime: string
   type: ActivityType
   style: ActivityStyle
   weather: number
@@ -53,14 +49,15 @@ export interface activityHistoryInfo {
 
 export interface activityHistoryResponse {
   code: number
-  state: string
+  message: string
   result: activityHistoryInfo[] | []
 }
 
 export interface ActivityWeatherResponse {
   code: number
-  state: string
+  message: string
   result: {
+    location: string,
     imgPath: string
     comment: string
     type: ActivityType
@@ -86,7 +83,7 @@ export interface ActivityReview {
 
 export interface ActivityReviewResponse {
   code: number
-  state: string
+  message: string
   result: null
 }
 

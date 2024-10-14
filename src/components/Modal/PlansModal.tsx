@@ -11,8 +11,11 @@ import GooglePlacesAutocomplete, {
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
-import { useWeatherContext } from '@/providers/WeatherProviter'
+import { useWeatherContext } from '@/providers/WeatherProvider'
 import { ActivityStyle, ActivityType } from '@/api'
+import { translateActivityStyle } from '../Info/translation'
+
+type Language = 'en' | 'ko'
 
 interface PlansModalProps {
   isVisible: boolean
@@ -39,7 +42,7 @@ interface FormValues {
 }
 
 const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
-  const language = useSelector((state: RootState) => state.language)
+  const language = useSelector((state: RootState) => state.language) as Language
   const router = useRouter()
   const weatherData = useWeatherContext()
 
@@ -55,17 +58,14 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
       },
     })
 
-  const activityStyles =
-    language === 'ko'
-      ? [
-          ActivityStyle.BusinessCasual,
-          ActivityStyle.Minimal,
-          ActivityStyle.Casual,
-          ActivityStyle.Street,
-          ActivityStyle.Sports,
-          ActivityStyle.Amekaji,
-        ]
-      : ['Business Casual', 'Minimal', 'Casual', 'Street', 'Sports', 'Amekaji']
+  const activityStyles = [
+    ActivityStyle.BusinessCasual,
+    ActivityStyle.Minimal,
+    ActivityStyle.Casual,
+    ActivityStyle.Street,
+    ActivityStyle.Sports,
+    ActivityStyle.Amekaji,
+  ]
 
   const watchedValues = watch([
     'activityType',
@@ -317,7 +317,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isVisible, closeModal }) => {
                               : 'bg-gray-100 text-gray-600'
                           }`}
                         >
-                          {style}
+                          {translateActivityStyle(style, language)}
                         </button>
                       ))}
                     </div>
