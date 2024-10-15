@@ -5,19 +5,23 @@ import { RootState } from '@/redux/store'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Cookies from 'js-cookie'
 
-const AuthToken = () => {
+interface AuthCallbackQueryParams {
+  searchParams: {
+    accessToken: string
+    refreshToken: string
+  }
+}
+
+const AuthToken = ({
+  searchParams: { accessToken, refreshToken },
+}: AuthCallbackQueryParams) => {
   const dispatch = useDispatch()
   const router = useRouter()
   const searchParams = useSearchParams()
 
   const urlAccessToken = searchParams.get('accessToken')
   const urlRefreshToken = searchParams.get('refreshToken')
-
-  const { accessToken, refreshToken } = useSelector(
-    (state: RootState) => state.login,
-  )
 
   useEffect(() => {
     if (urlAccessToken && urlRefreshToken) {
