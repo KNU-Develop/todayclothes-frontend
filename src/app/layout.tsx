@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import ReactQueryProvider from '@/providers/ReactQueryProvider'
 import ReduxProvider from '@/providers/ReduxProvider'
 import { WeatherProvider } from '@/providers/WeatherProvider'
+import TokenSetting from '@/providers/TokenSetting'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -32,6 +33,7 @@ export default function RootLayout({
           <ReactQueryProvider>
             <ReduxProvider>
               <WeatherProvider>
+                <TokenSetting />
                 <div className="container">{children}</div>
               </WeatherProvider>
             </ReduxProvider>
