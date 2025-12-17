@@ -1,6 +1,6 @@
 # 오늘의 옷 (TodayClothes)
 
-<img width="160" height="161" alt="Image" src="https://github.com/user-attachments/assets/18fde13e-2cfa-49a7-b87a-f0f637b53548" />
+<img width="125" height="125" alt="Image" src="https://github.com/user-attachments/assets/19913490-52d5-447e-9469-184f362f378d" />
 
 > 날씨와 활동에 맞는 완벽한 옷차림을 추천해드립니다!
 
